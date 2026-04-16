@@ -1,0 +1,5 @@
+/* Fonts loaded locally via @font-face in index.css (SVN-Avo, UTM Avo) */
+@import './variables.css';
+@import './base.css';
+@import './layout.css';
+@import './components.css';

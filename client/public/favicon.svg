@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Hoa Vu favicon">
+  <defs>
+    <linearGradient id="favBg" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#1550d6"/>
+      <stop offset="100%" stop-color="#0b3698"/>
+    </linearGradient>
+    <linearGradient id="favGold" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff8da"/>
+      <stop offset="45%" stop-color="#f4df83"/>
+      <stop offset="100%" stop-color="#d9b621"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#favBg)"/>
+  <path fill="url(#favGold)" d="M116 146l104 15 38 84 37-84 101-15-76 108-62 123-60-123-82-108zm51 35l77 102 14 31 14-31 72-102-54 10-32 72-33-72-58-10z"/>
+</svg>
