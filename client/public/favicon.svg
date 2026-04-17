@@ -1,15 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Hoa Vu favicon">
   <defs>
-    <linearGradient id="favBg" x1="0%" x2="0%" y1="0%" y2="100%">
-      <stop offset="0%" stop-color="#1550d6"/>
-      <stop offset="100%" stop-color="#0b3698"/>
+    <linearGradient id="favBg" x1="50%" x2="50%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#0d5bbd"/>
+      <stop offset="100%" stop-color="#08245d"/>
     </linearGradient>
-    <linearGradient id="favGold" x1="0%" x2="100%" y1="0%" y2="100%">
-      <stop offset="0%" stop-color="#fff8da"/>
-      <stop offset="45%" stop-color="#f4df83"/>
-      <stop offset="100%" stop-color="#d9b621"/>
+    <linearGradient id="favWhite" x1="20%" x2="80%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#eef2f6"/>
+    </linearGradient>
+    <linearGradient id="favOrange" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff9d17"/>
+      <stop offset="100%" stop-color="#ff8a00"/>
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="96" fill="url(#favBg)"/>
-  <path fill="url(#favGold)" d="M116 146l104 15 38 84 37-84 101-15-76 108-62 123-60-123-82-108zm51 35l77 102 14 31 14-31 72-102-54 10-32 72-33-72-58-10z"/>
+  <path fill="url(#favWhite)" d="M93 132 256 420 419 132 357 132 256 317 155 132Z"/>
+  <path fill="url(#favOrange)" d="M93 132 213 149 256 240 145 171Z"/>
+  <path fill="url(#favOrange)" d="M419 132 299 149 256 240 367 171Z"/>
 </svg>

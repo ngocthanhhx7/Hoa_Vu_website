@@ -115,7 +115,7 @@
   aspect-ratio: 4 / 4.2;
   background-image:
     linear-gradient(145deg, rgba(16, 63, 173, 0.9), rgba(11, 49, 137, 0.78)),
-    url('/brand/hoa-vu-mark.svg'),
+    url('/brand/hoa-vu-mark.jpg'),
     linear-gradient(180deg, #eef4ff, #ffffff);
   background-repeat: no-repeat;
   background-position: center, center, center;
@@ -150,7 +150,7 @@
   aspect-ratio: 16 / 10;
   background-image:
     linear-gradient(160deg, rgba(16, 63, 173, 0.88), rgba(12, 49, 128, 0.72)),
-    url('/brand/hoa-vu-mark.svg');
+    url('/brand/hoa-vu-mark.jpg');
   background-repeat: no-repeat;
   background-position: center, center;
   background-size: cover, 34%;

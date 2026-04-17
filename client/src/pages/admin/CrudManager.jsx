@@ -30,6 +30,17 @@ function serializeFieldValue(field, value) {
   return value;
 }
 
+function normalizeIdentifier(value) {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object') {
+    if (typeof value._id === 'string') return value._id;
+    if (value._id && typeof value._id === 'object' && typeof value._id.$oid === 'string') return value._id.$oid;
+    if (typeof value.$oid === 'string') return value.$oid;
+  }
+  return String(value);
+}
+
 function CrudManager({
   title,
   apiGet,
@@ -83,7 +94,16 @@ function CrudManager({
   function openEdit(item) {
     const nextForm = fields.reduce((result, field) => {
       const rawValue = getValueByPath(item, field.key);
-      const value = field.type === 'list' && Array.isArray(rawValue) ? rawValue.join('\n') : rawValue;
+      let value = rawValue;
+
+      if (field.type === 'list' && Array.isArray(rawValue)) {
+        value = rawValue.join('\n');
+      }
+
+      if (field.type === 'select') {
+        value = normalizeIdentifier(rawValue);
+      }
+
       return setValueByPath(result, field.key, value ?? (field.type === 'checkbox' ? false : ''));
     }, {});
     setEditing(item);
@@ -96,9 +116,10 @@ function CrudManager({
   }
 
   async function handleSave() {
-    const payload = fields.reduce((result, field) => {
+      const payload = fields.reduce((result, field) => {
       const rawValue = getValueByPath(form, field.key);
-      const value = serializeFieldValue(field, rawValue);
+      const preparedValue = field.type === 'select' ? normalizeIdentifier(rawValue) : rawValue;
+      const value = serializeFieldValue(field, preparedValue);
       return value === undefined ? result : setValueByPath(result, field.key, value);
     }, {});
 
@@ -210,4 +231,3 @@ function CrudManager({
 }
 
 export default CrudManager;
-

@@ -40,7 +40,7 @@ function AboutPage() {
             </Col>
             <Col lg={5} className="text-center mt-4 mt-lg-0">
               <div style={{ padding: 24, borderRadius: '32px', background: 'linear-gradient(145deg, rgba(16,63,173,0.12), rgba(242,205,69,0.14))', boxShadow: 'var(--shadow-lg)' }}>
-                <img src={BRAND.logoFull} alt={BRAND.name} style={{ width: '100%' }} />
+                <img src={BRAND.logoFull} alt={BRAND.name} style={{ width: 'min(100%, 320px)', display: 'block', margin: '0 auto' }} />
               </div>
             </Col>
           </Row>
