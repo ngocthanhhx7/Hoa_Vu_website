@@ -1,8 +1,8 @@
 export const BRAND = {
-  name: 'HOA VU BRANDING',
-  shortName: 'Hoa Vu',
+  name: 'HOAVU BRANDING',
+  shortName: 'HoaVu',
   adminName: 'HOA VU CMS',
-  titleSuffix: 'HOA VU BRANDING',
+  titleSuffix: 'HOAVU BRANDING',
   description: 'Studio thiết kế thương hiệu và truyền thông thị giác với ngôn ngữ hiện đại, sắc nét và sang trọng.',
   logoMark: '/brand/hoa-vu-mark.jpg',
   logoFull: '/brand/hoa-vu-mark.jpg',
