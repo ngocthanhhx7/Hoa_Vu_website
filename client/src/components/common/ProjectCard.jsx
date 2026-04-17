@@ -29,9 +29,9 @@ function ProjectCard({ project }) {
       )}
 
       <div className="project-card-overlay">
-        <div className="project-card-title">{project.client?.industry || project.category?.name || 'D? án'}</div>
+        <div className="project-card-title">{project.client?.industry || project.category?.name || 'Dự án'}</div>
         <div className="project-card-name">{project.client?.name || project.title}</div>
-        <span className="project-card-chip">Chi ti?t</span>
+        <span className="project-card-chip">Chi tiết</span>
       </div>
     </Link>
   );
