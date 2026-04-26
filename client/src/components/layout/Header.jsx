@@ -26,7 +26,7 @@ function Header() {
             <img
               src={BRAND.logoMark}
               alt={BRAND.name}
-              style={{ height: 54, width: 'auto', maxWidth: 180, objectFit: 'contain', display: 'block' }}
+              style={{ height: 30, width: 'auto', maxWidth: 180, objectFit: 'contain', display: 'block' }}
             />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="main-nav" />
