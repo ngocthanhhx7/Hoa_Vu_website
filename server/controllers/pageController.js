@@ -2,12 +2,63 @@ const Page = require('../models/Page');
 const SiteSettings = require('../models/SiteSettings');
 const Media = require('../models/Media');
 const { deleteFile, sanitizeFolder, uploadFile } = require('../services/storageService');
+const config = require('../config/config');
+
+function buildConfiguredS3Url(key) {
+  const normalizedKey = String(key || '').replace(/^\/+/, '');
+  if (!normalizedKey || !config.aws?.isConfigured) {
+    return '';
+  }
+
+  if (config.aws.publicBaseUrl) {
+    return `${config.aws.publicBaseUrl.replace(/\/+$/, '')}/${normalizedKey}`;
+  }
+
+  if (config.aws.endpoint) {
+    return `${config.aws.endpoint.replace(/\/+$/, '')}/${config.aws.bucket}/${normalizedKey}`;
+  }
+
+  return `https://${config.aws.bucket}.s3.${config.aws.region}.amazonaws.com/${normalizedKey}`;
+}
+
+function normalizeBannerUrl(rawUrl = '') {
+  const value = String(rawUrl || '').trim();
+  if (!value) return '';
+
+  // Keep non-S3 urls unchanged.
+  if (!/^https?:\/\//i.test(value) || !/amazonaws\.com/i.test(value)) {
+    return value;
+  }
+
+  const escapeRegExp = (text = '') => String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  // If url already targets configured bucket host, keep as-is.
+  if (config.aws?.bucket && new RegExp(`https?:\\/\\/${escapeRegExp(config.aws.bucket)}\\.s3[.-]`, 'i').test(value)) {
+    return value;
+  }
+
+  // Convert virtual-host S3 URL to configured host by preserving object key.
+  // Example: https://legacy-bucket.s3.ap-southeast-2.amazonaws.com/banners/x.jpg
+  const virtualHostMatch = value.match(/^https?:\/\/[^/]+\.s3[.-][^/]+\.amazonaws\.com\/(.+)$/i);
+  if (virtualHostMatch) {
+    return buildConfiguredS3Url(virtualHostMatch[1]) || value;
+  }
+
+  // Convert path-style S3 URL to configured host by preserving object key.
+  // Example: https://s3.ap-southeast-2.amazonaws.com/legacy-bucket/banners/x.jpg
+  const pathStyleMatch = value.match(/^https?:\/\/s3[.-][^/]+\.amazonaws\.com\/[^/]+\/(.+)$/i);
+  if (pathStyleMatch) {
+    return buildConfiguredS3Url(pathStyleMatch[1]) || value;
+  }
+
+  return value;
+}
 
 function sanitizeBannerImages(bannerImages = []) {
   return bannerImages
     .filter((banner) => banner && String(banner.url || '').trim())
     .map((banner, index) => ({
-      url: String(banner.url).trim(),
+      url: normalizeBannerUrl(banner.url),
       order: Number.isFinite(Number(banner.order)) ? Number(banner.order) : index,
       isActive: banner.isActive !== false,
     }))

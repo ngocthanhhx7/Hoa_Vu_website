@@ -22,12 +22,12 @@ function Header() {
 
       <Navbar expand="lg" style={{ background: 'rgba(255,255,255,0.96)', boxShadow: 'var(--shadow-sm)', padding: '12px 0' }}>
         <Container>
-          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-3">
-            <img src={BRAND.logoMark} alt={BRAND.name} style={{ width: 54, height: 54, boxShadow: '0 12px 28px rgba(11, 54, 152, 0.16)' }} />
-            <div className="brand-mark">
-              <strong>{BRAND.shortName}</strong>
-              <span>Branding studio</span>
-            </div>
+          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center flex-shrink-0">
+            <img
+              src={BRAND.logoMark}
+              alt={BRAND.name}
+              style={{ height: 54, width: 'auto', maxWidth: 180, objectFit: 'contain', display: 'block' }}
+            />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="main-nav" />
           <Navbar.Collapse id="main-nav">
@@ -55,7 +55,13 @@ function Header() {
               <Nav.Link as={NavLink} to="/lien-he">LIÊN HỆ</Nav.Link>
             </Nav>
 
-            <a href={BRAND.contact.facebook} target="_blank" rel="noreferrer" className="btn-hoavu btn-hoavu--primary d-none d-lg-inline-flex">
+            <a
+              href={BRAND.contact.facebook}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-hoavu btn-hoavu--primary d-none d-lg-inline-flex"
+              style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+            >
               NHẮN TIN FANPAGE
             </a>
           </Navbar.Collapse>

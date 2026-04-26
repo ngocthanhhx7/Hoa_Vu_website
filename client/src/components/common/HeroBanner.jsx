@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { resolveMediaUrl } from '../../utils/media';
+import { BRAND } from '../../config/brand';
 
 const HeroBanner = ({ title, description, ctaText, ctaLink, bgImage, variant = 'default', bannerImages = [] }) => {
   /* ── Slideshow state (only for image-only banners) ── */
@@ -41,7 +42,22 @@ const HeroBanner = ({ title, description, ctaText, ctaLink, bgImage, variant = '
                 key={img._id || img.url || index}
                 className={`hero-slideshow__slide ${index === currentSlide ? 'is-active' : ''}`}
               >
-                <img src={src} alt={alt} draggable="false" />
+                <img
+                  src={src}
+                  alt={alt}
+                  draggable="false"
+                  onError={(event) => {
+                    const fallback = resolveMediaUrl(BRAND.banner);
+                    const target = event.currentTarget;
+
+                    if (!fallback || target.dataset.fallbackApplied === '1') {
+                      return;
+                    }
+
+                    target.dataset.fallbackApplied = '1';
+                    target.src = fallback;
+                  }}
+                />
               </div>
             );
           })}
