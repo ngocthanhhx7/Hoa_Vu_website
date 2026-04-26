@@ -16,7 +16,7 @@ function Footer() {
       <Container>
         <Row className="gy-4 align-items-start">
           <Col lg={4}>
-            <img src="/brand/Logofoot.svg" alt={`${BRAND.name} footer logo`} style={{ width: 'min(100%, 180px)', marginBottom: 20 }} />
+            <img src="/brand/Logofoot.svg" alt={`${BRAND.name} footer logo`} style={{ width: 'min(100%, 90px)', marginBottom: 20 }} />
             <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: 1.8, marginBottom: 24 }}>
               {BRAND.description}
             </p>
