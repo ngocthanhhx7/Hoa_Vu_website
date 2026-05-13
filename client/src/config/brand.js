@@ -3,7 +3,7 @@ export const BRAND = {
   shortName: 'HoaVu',
   adminName: 'HOA VU CMS',
   titleSuffix: 'HOAVU BRANDING',
-  description: 'Studio thiết kế thương hiệu và truyền thông thị giác với ngôn ngữ hiện đại, sắc nét và sang trọng.',
+  description: '"Chuyên nghiệp - Sáng tạo - Tận tâm"',
   logoMark: '/brand/d88fd228-ccb5-45e9-bfc7-414eda8c4d8a.jpg',
   logoFull: '/brand/d88fd228-ccb5-45e9-bfc7-414eda8c4d8a.jpg',
   banner: '/brand/hero-banner.jpg',
