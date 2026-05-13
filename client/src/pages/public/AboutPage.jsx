@@ -1,8 +1,8 @@
-﻿import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
-import StatsCounter from '../../components/common/StatsCounter';
+// import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { BRAND, buildTitle } from '../../config/brand';
 
@@ -64,7 +64,7 @@ function AboutPage() {
         </Container>
       </section>
 
-      <StatsCounter />
+      {/* <StatsCounter /> */}
       <TestimonialCarousel />
     </>
   );
