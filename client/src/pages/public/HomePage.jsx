@@ -5,7 +5,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { FiArrowRight, FiAward, FiEye, FiHeart, FiTarget } from 'react-icons/fi';
 import HeroBanner from '../../components/common/HeroBanner';
 import ProjectGrid from '../../components/common/ProjectGrid';
-import StatsCounter from '../../components/common/StatsCounter';
+// import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { BRAND, buildTitle } from '../../config/brand';
 import { publicAPI } from '../../services/api';
@@ -36,10 +36,10 @@ function HomePage() {
   }, []);
 
   const introCards = useMemo(() => ([
-    { icon: <FiHeart />, title: 'TEAM / ĐỘI NGŨ', desc: 'Một studio gọn, linh hoạt và tập trung vào việc biến brief kinh doanh thành hệ thống hình ảnh có bản lĩnh riêng.' },
-    { icon: <FiEye />, title: 'VISION / TẦM NHÌN', desc: 'Xây dựng những thương hiệu có thần thái thị giác rõ ràng, sang trọng và dễ nhận ra trên mọi điểm chạm.' },
-    { icon: <FiTarget />, title: 'MISSION / SỨ MỆNH', desc: 'Thiết kế logo, nhận diện và ấn phẩm truyền thông vừa đẹp, vừa đủ lực để nâng cảm nhận thương hiệu.' },
-    { icon: <FiAward />, title: 'CORE VALUE / GIÁ TRỊ CỐT LÕI', desc: 'Tinh gọn, chỉn chu, có thẩm mỹ và luôn ưu tiên tính ứng dụng thực tế trong từng quyết định thiết kế.' },
+    { icon: <FiHeart />, title: 'TEAM / ĐỘI NGŨ', desc: 'Hoavu là đơn vị thiết kế logo với tinh thần trẻ, đầy nhiệt huyết, linh hoạt và luôn tìm cách làm tốt hơn qua từng dự án. Không ngừng học hỏi, cập nhật và đổi mới để mỗi thiết kế không chỉ đẹp mà còn hiệu quả khi triển khai thực tế.' },
+    { icon: <FiEye />, title: 'VISION / TẦM NHÌN', desc: 'Trong 5 năm tới, Hoavu hướng đến việc đồng hành và hỗ trợ hơn 5000 khách hàng xây dựng hình ảnh thương hiệu rõ ràng, dễ nhận diện và triển khai thực tế hiệu quả.' },
+    { icon: <FiTarget />, title: 'MISSION / SỨ MỆNH', desc: 'Hoavu biến những ý tưởng khởi đầu trở thành nền tảng thương hiệu rõ ràng và có giá trị lâu dài, xây dựng nền tảng vững chắc để tiếp tục phát triển trong tương lai.' },
+    { icon: <FiAward />, title: 'CORE VALUE / GIÁ TRỊ CỐT LÕI', desc: '"Chuyên nghiệp - Sáng tạo - Tận tâm" Chuyên nghiệp trong công việc, sáng tạo trong thiết kế, tận tâm trong phục vụ khách hàng.' },
   ]), []);
 
   const heroImages = bannerImages.length > 0 ? bannerImages : [BRAND.banner];
@@ -106,7 +106,7 @@ function HomePage() {
         </Container>
       </section>
 
-      <StatsCounter />
+      {/* <StatsCounter /> */}
       <TestimonialCarousel />
     </>
   );
