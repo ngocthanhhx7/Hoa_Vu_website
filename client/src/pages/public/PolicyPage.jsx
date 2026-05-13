@@ -3,8 +3,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
-import SEO, { stripToText } from '../../components/common/SEO';
+import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
+import { stripToText } from '../../utils/seo';
 
 function PolicyPage() {
   const { slug } = useParams();

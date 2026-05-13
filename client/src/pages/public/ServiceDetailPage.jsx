@@ -5,10 +5,11 @@ import { Link, useParams } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import HeroBanner from '../../components/common/HeroBanner';
 import ProjectGrid from '../../components/common/ProjectGrid';
-import SEO, { buildCanonicalUrl, stripToText } from '../../components/common/SEO';
+import SEO from '../../components/common/SEO';
 import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { publicAPI } from '../../services/api';
+import { buildCanonicalUrl, stripToText } from '../../utils/seo';
 
 function ServiceDetailPage() {
   const { slug } = useParams();

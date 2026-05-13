@@ -4,9 +4,10 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import BlogCard from '../../components/common/BlogCard';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
-import SEO, { absoluteUrl, buildCanonicalUrl, stripToText } from '../../components/common/SEO';
+import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 import { resolveMediaUrl } from '../../utils/media';
+import { absoluteUrl, buildCanonicalUrl, stripToText } from '../../utils/seo';
 
 function BlogDetailPage() {
   const { category, slug } = useParams();

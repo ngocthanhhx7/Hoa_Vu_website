@@ -1,53 +1,15 @@
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
-import { BRAND, buildTitle } from '../../config/brand';
-
-export const SITE_URL = (import.meta.env.VITE_SITE_URL || import.meta.env.VITE_PUBLIC_SITE_URL || BRAND.url || 'https://hoavu.com.vn').replace(/\/+$/, '');
-
-export function buildCanonicalUrl(path = '/') {
-  const cleanPath = path || '/';
-  if (/^https?:\/\//i.test(cleanPath)) {
-    return cleanPath;
-  }
-
-  return `${SITE_URL}${cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`}`;
-}
-
-export function absoluteUrl(url = '') {
-  if (!url) return buildCanonicalUrl(BRAND.defaultImage);
-  if (/^https?:\/\//i.test(url)) return url;
-  return buildCanonicalUrl(url);
-}
-
-export function stripToText(value = '') {
-  return String(value)
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function normalizeTitle(title) {
-  if (!title) return BRAND.titleSuffix;
-  return /HOA\s?VU|HOAVU/i.test(title) ? title : buildTitle(title);
-}
-
-function normalizeDescription(description) {
-  const clean = stripToText(description || BRAND.seoDescription || BRAND.description);
-  return clean.length > 170 ? `${clean.slice(0, 167).trim()}...` : clean;
-}
-
-function normalizeKeywords(keywords = []) {
-  if (Array.isArray(keywords)) {
-    return keywords.filter(Boolean).join(', ');
-  }
-
-  return String(keywords || '');
-}
-
-function normalizeJsonLd(jsonLd) {
-  if (!jsonLd) return [];
-  return Array.isArray(jsonLd) ? jsonLd.filter(Boolean) : [jsonLd];
-}
+import { BRAND } from '../../config/brand';
+import {
+  SITE_URL,
+  absoluteUrl,
+  buildCanonicalUrl,
+  normalizeJsonLd,
+  normalizeSeoDescription,
+  normalizeSeoKeywords,
+  normalizeSeoTitle,
+} from '../../utils/seo';
 
 function SEO({
   title,
@@ -63,11 +25,11 @@ function SEO({
   const location = useLocation();
   const canonicalPath = path || `${location.pathname}${location.search}`;
   const canonicalUrl = buildCanonicalUrl(canonicalPath);
-  const pageTitle = normalizeTitle(title);
-  const pageDescription = normalizeDescription(description);
+  const pageTitle = normalizeSeoTitle(title);
+  const pageDescription = normalizeSeoDescription(description);
   const pageImage = absoluteUrl(image || BRAND.defaultImage);
   const robots = noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
-  const keywordContent = normalizeKeywords(keywords);
+  const keywordContent = normalizeSeoKeywords(keywords);
   const schemas = [
     {
       '@context': 'https://schema.org',

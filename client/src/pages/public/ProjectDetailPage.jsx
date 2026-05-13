@@ -4,9 +4,10 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import ProjectGrid from '../../components/common/ProjectGrid';
-import SEO, { absoluteUrl, buildCanonicalUrl, stripToText } from '../../components/common/SEO';
+import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 import { normalizeMediaList, resolveMediaUrl } from '../../utils/media';
+import { absoluteUrl, buildCanonicalUrl, stripToText } from '../../utils/seo';
 
 function ProjectDetailPage() {
   const { category, slug } = useParams();
