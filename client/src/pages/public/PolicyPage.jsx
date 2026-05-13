@@ -1,9 +1,9 @@
 ﻿import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
+import SEO, { stripToText } from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 
 function PolicyPage() {
@@ -24,11 +24,16 @@ function PolicyPage() {
     return <div className="text-center py-5"><div className="spinner-border text-danger" /></div>;
   }
 
+  const pagePath = `/chinh-sach/${page.slug}`;
+
   return (
     <>
-      <Helmet>
-        <title>{page.title} | HOA VU</title>
-      </Helmet>
+      <SEO
+        title={page.seo?.title || page.title}
+        description={page.seo?.description || stripToText(page.htmlContent)}
+        path={pagePath}
+        keywords={page.seo?.keywords}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Chính sách', to: '/chinh-sach/chinh-sach-va-quy-dinh' }, { label: page.title }]} />
       <section className="section">
         <Container>

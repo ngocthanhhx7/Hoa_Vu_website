@@ -1,9 +1,9 @@
 ﻿import { useState } from 'react';
 import { Alert, Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { Helmet } from 'react-helmet-async';
 import { FiExternalLink, FiMapPin, FiMessageCircle } from 'react-icons/fi';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
-import { BRAND, buildTitle } from '../../config/brand';
+import SEO from '../../components/common/SEO';
+import { BRAND } from '../../config/brand';
 import { publicAPI } from '../../services/api';
 
 function ContactPage() {
@@ -53,15 +53,18 @@ function ContactPage() {
 
   return (
     <>
-      <Helmet>
-        <title>{buildTitle('Liên hệ')}</title>
-      </Helmet>
+      <SEO
+        title="Liên hệ tư vấn thiết kế thương hiệu"
+        description="Liên hệ HOAVU BRANDING để tư vấn thiết kế logo, nhận diện thương hiệu và visual truyền thông cho doanh nghiệp."
+        path="/lien-he"
+        image={BRAND.logoFull}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Liên hệ' }]} />
       <section className="contact-form-section">
         <Container>
           <Row>
             <Col lg={7} className="mb-4">
-              <h2 className="section-title">Đăng ký tư vấn</h2>
+              <h1 className="section-title">Đăng ký tư vấn</h1>
               <p style={{ color: 'var(--gray-600)', marginTop: 16 }}>
                 Để phản hồi nhanh nhất, bạn có thể để lại form hoặc nhắn trực tiếp qua fanpage Hoa Vu Branding.
               </p>

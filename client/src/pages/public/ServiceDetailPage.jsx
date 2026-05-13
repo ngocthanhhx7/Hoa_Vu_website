@@ -1,11 +1,11 @@
 ﻿import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Container } from 'react-bootstrap';
 import { Link, useParams } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import HeroBanner from '../../components/common/HeroBanner';
 import ProjectGrid from '../../components/common/ProjectGrid';
+import SEO, { buildCanonicalUrl, stripToText } from '../../components/common/SEO';
 import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { publicAPI } from '../../services/api';
@@ -34,11 +34,31 @@ function ServiceDetailPage() {
     return <div className="text-center py-5"><div className="spinner-border text-danger" /></div>;
   }
 
+  const seoDescription = service.seo?.description || service.shortDescription || service.description || stripToText(service.htmlContent);
+  const servicePath = `/dich-vu/${service.slug}`;
+
   return (
     <>
-      <Helmet>
-        <title>{service.seo?.title || `${service.title} | HOA VU`}</title>
-      </Helmet>
+      <SEO
+        title={service.seo?.title || service.title}
+        description={seoDescription}
+        path={servicePath}
+        image={service.heroImage}
+        keywords={service.seo?.keywords}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          name: service.title,
+          description: seoDescription,
+          url: buildCanonicalUrl(servicePath),
+          provider: {
+            '@type': 'Organization',
+            name: 'HOAVU BRANDING',
+            url: buildCanonicalUrl('/'),
+          },
+          areaServed: 'VN',
+        }}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Dịch vụ', to: '/dich-vu' }, { label: service.title }]} />
       <HeroBanner title={service.title} description={service.description} ctaText="Liên hệ tư vấn" ctaLink="/lien-he" />
       <StatsCounter />

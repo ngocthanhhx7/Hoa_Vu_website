@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
 import { FiArrowRight, FiAward, FiEye, FiHeart, FiTarget } from 'react-icons/fi';
 import HeroBanner from '../../components/common/HeroBanner';
 import ProjectGrid from '../../components/common/ProjectGrid';
+import SEO from '../../components/common/SEO';
 // import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
-import { BRAND, buildTitle } from '../../config/brand';
+import { BRAND } from '../../config/brand';
 import { publicAPI } from '../../services/api';
 
 function HomePage() {
@@ -46,9 +46,14 @@ function HomePage() {
 
   return (
     <>
-      <Helmet>
-        <title>{buildTitle('Trang chủ')}</title>
-      </Helmet>
+      <SEO
+        title="Thiết kế logo và nhận diện thương hiệu"
+        description={BRAND.seoDescription}
+        path="/"
+        image={BRAND.banner}
+        keywords={['thiết kế logo', 'nhận diện thương hiệu', 'thiết kế branding', 'HOAVU BRANDING']}
+      />
+      <h1 className="visually-hidden">HOAVU BRANDING - Thiết kế logo và nhận diện thương hiệu</h1>
 
       <HeroBanner bannerImages={heroImages} />
 

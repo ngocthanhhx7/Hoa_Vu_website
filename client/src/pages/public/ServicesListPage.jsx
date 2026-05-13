@@ -1,8 +1,8 @@
 ﻿import { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
+import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 
 function ServicesListPage() {
@@ -18,13 +18,16 @@ function ServicesListPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Dịch vụ | HOA VU</title>
-      </Helmet>
+      <SEO
+        title="Dịch vụ thiết kế thương hiệu"
+        description="Khám phá các dịch vụ thiết kế logo, nhận diện thương hiệu và visual truyền thông của HOAVU BRANDING cho doanh nghiệp."
+        path="/dich-vu"
+        keywords={['dịch vụ thiết kế logo', 'nhận diện thương hiệu', 'thiết kế thương hiệu']}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Dịch vụ' }]} />
       <section className="section">
         <Container>
-          <h2 className="section-title">Dịch vụ</h2>
+          <h1 className="section-title">Dịch vụ</h1>
           <p className="mt-3 mb-4" style={{ color: 'var(--gray-600)' }}>
             Các nhóm dịch vụ được thiết kế để doanh nghiệp có thể bắt đầu từ logo, mở rộng sang nhận diện và tiếp tục triển khai trên nền tảng số.
           </p>

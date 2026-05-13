@@ -35,7 +35,7 @@ const HeroBanner = ({ title, description, ctaText, ctaLink, bgImage, variant = '
         <div className="hero-slideshow__track">
           {images.map((img, index) => {
             const src = typeof img === 'string' ? resolveMediaUrl(img) : resolveMediaUrl(img.url);
-            const alt = typeof img === 'string' ? 'Banner Hoa Vu' : 'Banner Hoa Vu';
+            const alt = typeof img === 'string' ? 'Banner Hoa Vu' : (img.alt || 'Banner Hoa Vu');
 
             return (
               <div
@@ -45,6 +45,9 @@ const HeroBanner = ({ title, description, ctaText, ctaLink, bgImage, variant = '
                 <img
                   src={src}
                   alt={alt}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
+                  decoding="async"
                   draggable="false"
                   onError={(event) => {
                     const fallback = resolveMediaUrl(BRAND.banner);

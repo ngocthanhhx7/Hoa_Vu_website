@@ -1,10 +1,10 @@
 ﻿import { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Col, Container, Nav, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { NavLink, useParams, useSearchParams } from 'react-router-dom';
 import BlogCard from '../../components/common/BlogCard';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import Pagination from '../../components/common/Pagination';
+import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 
 function BlogByCategoryPage() {
@@ -40,12 +40,15 @@ function BlogByCategoryPage() {
 
   return (
     <>
-      <Helmet>
-        <title>{currentCategory ? `${currentCategory.name} | HOA VU` : 'Blog | HOA VU'}</title>
-      </Helmet>
+      <SEO
+        title={currentCategory ? `Blog ${currentCategory.name}` : 'Blog thiết kế thương hiệu'}
+        description={`Bài viết ${currentCategory?.name || 'về thiết kế thương hiệu'} từ HOAVU BRANDING.`}
+        path={page > 1 ? `/blog/${category}?page=${page}` : `/blog/${category}`}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Blog', to: '/blog' }, { label: currentCategory?.name || category }]} />
       <section className="section">
         <Container>
+          <h1 className="section-title">{currentCategory?.name || 'Blog'}</h1>
           <div className="category-tabs mb-4">
             <NavLink to="/blog" end className={({ isActive }) => isActive ? 'active' : ''}>Tất cả</NavLink>
             {categories.map((item) => (

@@ -1,10 +1,10 @@
 ﻿import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import ProjectGrid from '../../components/common/ProjectGrid';
+import SEO, { absoluteUrl, buildCanonicalUrl, stripToText } from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 import { normalizeMediaList, resolveMediaUrl } from '../../utils/media';
 
@@ -38,11 +38,32 @@ function ProjectDetailPage() {
     return <div className="text-center py-5"><div className="spinner-border text-danger" /></div>;
   }
 
+  const projectPath = `/du-an/${project.category?.slug || category}/${project.slug}`;
+  const seoDescription = project.seo?.description || project.description || stripToText(project.htmlContent);
+  const seoImage = resolveMediaUrl(project.thumbnail || visuals[0]);
+
   return (
     <>
-      <Helmet>
-        <title>{project.seo?.title || `${project.title} | HOA VU`}</title>
-      </Helmet>
+      <SEO
+        title={project.seo?.title || project.title}
+        description={seoDescription}
+        path={projectPath}
+        image={seoImage}
+        imageAlt={project.title}
+        keywords={project.seo?.keywords || project.tags}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'CreativeWork',
+          name: project.title,
+          description: seoDescription,
+          url: buildCanonicalUrl(projectPath),
+          image: seoImage ? absoluteUrl(seoImage) : undefined,
+          creator: {
+            '@type': 'Organization',
+            name: 'HOAVU BRANDING',
+          },
+        }}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Dự án', to: '/du-an' }, { label: project.category?.name || category, to: `/du-an/${project.category?.slug || category}` }, { label: project.title }]} />
       <section className="section project-detail-page">
         <Container>
@@ -60,7 +81,13 @@ function ProjectDetailPage() {
                     <div className="project-visual-stack">
                       {visuals.map((item, index) => (
                         <figure key={`${item}-${index}`} className="project-visual-frame">
-                          <img src={resolveMediaUrl(item)} alt={`${project.title} - visual ${index + 1}`} />
+                          <img
+                            src={resolveMediaUrl(item)}
+                            alt={`${project.title} - visual ${index + 1}`}
+                            loading={index === 0 ? 'eager' : 'lazy'}
+                            fetchPriority={index === 0 ? 'high' : 'auto'}
+                            decoding="async"
+                          />
                         </figure>
                       ))}
                     </div>

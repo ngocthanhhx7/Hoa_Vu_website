@@ -1,10 +1,10 @@
 ﻿import { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { NavLink, useParams, useSearchParams } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import Pagination from '../../components/common/Pagination';
 import ProjectGrid from '../../components/common/ProjectGrid';
+import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 
 function ProjectsByCategoryPage() {
@@ -40,13 +40,15 @@ function ProjectsByCategoryPage() {
 
   return (
     <>
-      <Helmet>
-        <title>{currentCategory ? `${currentCategory.name} | HOA VU` : 'Dự án | HOA VU'}</title>
-      </Helmet>
+      <SEO
+        title={currentCategory ? `Dự án ${currentCategory.name}` : 'Dự án thiết kế thương hiệu'}
+        description={`Các dự án ${currentCategory?.name || 'thiết kế thương hiệu'} đã thực hiện bởi HOAVU BRANDING.`}
+        path={page > 1 ? `/du-an/${category}?page=${page}` : `/du-an/${category}`}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Dự án', to: '/du-an' }, { label: currentCategory?.name || category }]} />
       <section className="section">
         <Container>
-          <h2 className="section-title">{currentCategory?.name || 'Danh mục dự án'}</h2>
+          <h1 className="section-title">{currentCategory?.name || 'Danh mục dự án'}</h1>
           <div className="category-tabs mt-4">
             <NavLink to="/du-an" end className={({ isActive }) => isActive ? 'active' : ''}>Tất cả</NavLink>
             {categories.map((item) => (

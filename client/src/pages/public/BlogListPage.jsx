@@ -1,10 +1,10 @@
 ﻿import { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { NavLink, useSearchParams } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
 import BlogCard from '../../components/common/BlogCard';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import Pagination from '../../components/common/Pagination';
+import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 
 function BlogListPage() {
@@ -33,13 +33,16 @@ function BlogListPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Blog | HOA VU</title>
-      </Helmet>
+      <SEO
+        title="Blog thiết kế thương hiệu"
+        description="Bài viết, ý tưởng và kinh nghiệm về thiết kế logo, nhận diện thương hiệu và xây dựng hình ảnh doanh nghiệp từ HOAVU BRANDING."
+        path={page > 1 ? `/blog?page=${page}` : '/blog'}
+        keywords={['blog thiết kế logo', 'cẩm nang branding', 'ý tưởng nhận diện thương hiệu']}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Blog' }]} />
       <section className="section">
         <Container>
-          <h2 className="section-title">Blog</h2>
+          <h1 className="section-title">Blog</h1>
           <div className="category-tabs mt-4">
             <NavLink to="/blog" end className={({ isActive }) => isActive ? 'active' : ''}>Tất cả</NavLink>
             {categories.map((category) => (

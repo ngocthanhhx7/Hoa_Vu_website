@@ -1,10 +1,10 @@
 import { Container, Row, Col } from 'react-bootstrap';
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
+import SEO from '../../components/common/SEO';
 // import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
-import { BRAND, buildTitle } from '../../config/brand';
+import { BRAND } from '../../config/brand';
 
 function AboutPage() {
   const steps = [
@@ -17,16 +17,19 @@ function AboutPage() {
 
   return (
     <>
-      <Helmet>
-        <title>{buildTitle('Giới thiệu')}</title>
-      </Helmet>
+      <SEO
+        title="Giới thiệu"
+        description="Tìm hiểu về HOAVU BRANDING, studio thiết kế logo, nhận diện thương hiệu và visual truyền thông với quy trình làm việc rõ ràng."
+        path="/gioi-thieu"
+        image={BRAND.logoFull}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Giới thiệu' }]} />
 
       <section className="section">
         <Container>
           <Row className="align-items-center">
             <Col lg={7}>
-              <h2 className="section-title">Về chúng tôi</h2>
+              <h1 className="section-title">Về chúng tôi</h1>
               <p className="mt-3" style={{ lineHeight: 1.8, color: 'var(--gray-700)' }}>
                 {BRAND.name} là studio tập trung vào logo, nhận diện thương hiệu và visual truyền thông cho doanh nghiệp cần một hình ảnh tinh gọn nhưng vẫn đủ độ sang và khác biệt.
               </p>

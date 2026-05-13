@@ -20,6 +20,7 @@ function ProjectCard({ project }) {
           src={imageUrl}
           alt={project.title}
           loading="lazy"
+          decoding="async"
           onError={() => setHasError(true)}
         />
       ) : (

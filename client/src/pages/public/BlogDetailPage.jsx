@@ -1,11 +1,12 @@
 ﻿import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import BlogCard from '../../components/common/BlogCard';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
+import SEO, { absoluteUrl, buildCanonicalUrl, stripToText } from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
+import { resolveMediaUrl } from '../../utils/media';
 
 function BlogDetailPage() {
   const { category, slug } = useParams();
@@ -30,11 +31,39 @@ function BlogDetailPage() {
     return <div className="text-center py-5"><div className="spinner-border text-danger" /></div>;
   }
 
+  const postPath = `/blog/${post.category?.slug || category}/${post.slug}`;
+  const seoDescription = post.seo?.description || post.excerpt || stripToText(post.htmlContent);
+  const seoImage = resolveMediaUrl(post.thumbnail);
+
   return (
     <>
-      <Helmet>
-        <title>{post.seo?.title || `${post.title} | HOA VU`}</title>
-      </Helmet>
+      <SEO
+        title={post.seo?.title || post.title}
+        description={seoDescription}
+        path={postPath}
+        image={seoImage}
+        imageAlt={post.title}
+        type="article"
+        keywords={post.seo?.keywords || post.tags}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: post.title,
+          description: seoDescription,
+          url: buildCanonicalUrl(postPath),
+          image: seoImage ? absoluteUrl(seoImage) : undefined,
+          datePublished: post.createdAt,
+          dateModified: post.updatedAt || post.createdAt,
+          author: {
+            '@type': 'Person',
+            name: post.author?.name || 'Hoa Vu Team',
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: 'HOAVU BRANDING',
+          },
+        }}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Blog', to: '/blog' }, { label: post.category?.name || category, to: `/blog/${post.category?.slug || category}` }, { label: post.title }]} />
       <section className="section">
         <Container>

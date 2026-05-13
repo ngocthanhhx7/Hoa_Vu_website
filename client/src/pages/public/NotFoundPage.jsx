@@ -8,6 +8,7 @@ function NotFoundPage() {
     <>
       <Helmet>
         <title>{buildTitle('404')}</title>
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <section className="section">
         <Container className="text-center">

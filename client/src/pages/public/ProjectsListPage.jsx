@@ -1,10 +1,10 @@
 ﻿import { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { NavLink, useSearchParams } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import Pagination from '../../components/common/Pagination';
 import ProjectGrid from '../../components/common/ProjectGrid';
+import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 
 function ProjectsListPage() {
@@ -33,13 +33,16 @@ function ProjectsListPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Dự án | HOA VU</title>
-      </Helmet>
+      <SEO
+        title="Dự án thiết kế thương hiệu"
+        description="Xem các dự án thiết kế logo, nhận diện thương hiệu và visual branding đã thực hiện bởi HOAVU BRANDING."
+        path={page > 1 ? `/du-an?page=${page}` : '/du-an'}
+        keywords={['dự án thiết kế logo', 'portfolio branding', 'dự án nhận diện thương hiệu']}
+      />
       <HoaVuBreadcrumb items={[{ label: 'Dự án' }]} />
       <section className="section">
         <Container>
-          <h2 className="section-title">Tất cả dự án</h2>
+          <h1 className="section-title">Tất cả dự án</h1>
           <div className="category-tabs mt-4">
             <NavLink to="/du-an" end className={({ isActive }) => isActive ? 'active' : ''}>Tất cả</NavLink>
             {categories.map((category) => (

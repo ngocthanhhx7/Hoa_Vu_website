@@ -30,6 +30,7 @@ function parseTrustProxy(value) {
 
 module.exports = {
   port: parseInteger(process.env.PORT, 9999),
+  siteUrl: (process.env.SITE_URL || 'https://hoavu.com.vn').replace(/\/+$/, ''),
   mongoUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/hoavu_platform',
   jwtSecret: process.env.JWT_SECRET || 'hoavu_dev_secret_2024',
   jwtExpire: process.env.JWT_EXPIRE || '7d',

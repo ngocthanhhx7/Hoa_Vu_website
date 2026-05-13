@@ -1,0 +1,21 @@
+{
+  "name": "HOAVU BRANDING",
+  "short_name": "HoaVu",
+  "description": "Thiet ke logo, nhan dien thuong hieu va visual truyen thong.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#103fad",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

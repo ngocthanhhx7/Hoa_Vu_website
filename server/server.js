@@ -11,6 +11,7 @@ const config = require('./config/config');
 const errorHandler = require('./middleware/errorHandler');
 const publicRoutes = require('./routes/publicRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const seoCtrl = require('./controllers/seoController');
 
 const app = express();
 
@@ -55,6 +56,9 @@ if (config.nodeEnv === 'development') {
 }
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.get('/robots.txt', seoCtrl.getRobots);
+app.get('/sitemap.xml', seoCtrl.getSitemap);
 
 app.use('/api', publicRoutes);
 app.use('/api/admin', adminRoutes);
