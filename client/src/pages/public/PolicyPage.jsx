@@ -1,4 +1,4 @@
-﻿import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
@@ -34,6 +34,10 @@ function PolicyPage() {
         description={page.seo?.description || stripToText(page.htmlContent)}
         path={pagePath}
         keywords={page.seo?.keywords}
+        breadcrumbItems={[
+          { label: 'Chính sách', to: '/chinh-sach/chinh-sach-va-quy-dinh' },
+          { label: page.title }
+        ]}
       />
       <HoaVuBreadcrumb items={[{ label: 'Chính sách', to: '/chinh-sach/chinh-sach-va-quy-dinh' }, { label: page.title }]} />
       <section className="section">
