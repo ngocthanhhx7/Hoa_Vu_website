@@ -1,4 +1,4 @@
-﻿.section-title {
+.section-title {
   margin-bottom: 28px;
 }
 
@@ -272,7 +272,7 @@
 
 .rich-text p,
 .rich-text li {
-  color: var(--color-text-soft);
+  color: var(--color-text);
   line-height: 1.85;
 }
 

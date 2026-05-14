@@ -1092,7 +1092,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .intro-card p {
   font-size: 14px;
-  color: var(--gray-600);
+  color: var(--gray-800);
   line-height: 1.7;
 }
 

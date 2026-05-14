@@ -42,8 +42,8 @@ function PolicyPage() {
       <HoaVuBreadcrumb items={[{ label: 'Chính sách', to: '/chinh-sach/chinh-sach-va-quy-dinh' }, { label: page.title }]} />
       <section className="section">
         <Container>
-          <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: 24 }}>{page.title}</h1>
-          <div dangerouslySetInnerHTML={{ __html: safeHtml }} style={{ maxWidth: 900, lineHeight: 2, color: 'var(--gray-700)' }} />
+          <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: 24, color: 'var(--color-text, #142446)' }}>{page.title}</h1>
+          <div className="rich-text" dangerouslySetInnerHTML={{ __html: safeHtml }} style={{ maxWidth: 900, lineHeight: 1.85, color: 'var(--color-text, #142446)' }} />
         </Container>
       </section>
     </>

@@ -203,8 +203,7 @@ const seedData = async () => {
       {
         title: 'Chính sách và quy định',
         slug: 'chinh-sach-va-quy-dinh',
-        htmlContent: `<h2>Chính sách và Quy định chung</h2>
-<p>Chào mừng Quý khách đến với HOA VU BRANDING. Khi sử dụng dịch vụ thiết kế của chúng tôi, Quý khách đồng ý tuân thủ các điều khoản và quy định dưới đây. Các chính sách này được xây dựng dựa trên sự minh bạch, bảo vệ quyền lợi của cả hai bên và tuân thủ pháp luật Việt Nam (Luật Thương mại 2005, Bộ luật Dân sự 2015, Luật Sở hữu trí tuệ 2005 sửa đổi bổ sung 2022).</p>
+        htmlContent: `<p>Chào mừng Quý khách đến với HOA VU BRANDING. Khi sử dụng dịch vụ thiết kế của chúng tôi, Quý khách đồng ý tuân thủ các điều khoản và quy định dưới đây. Các chính sách này được xây dựng dựa trên sự minh bạch, bảo vệ quyền lợi của cả hai bên và tuân thủ pháp luật Việt Nam (Luật Thương mại 2005, Bộ luật Dân sự 2015, Luật Sở hữu trí tuệ 2005 sửa đổi bổ sung 2022).</p>
 
 <h3>1. Quyền và trách nhiệm của HOA VU</h3>
 <ul>
@@ -235,8 +234,7 @@ const seedData = async () => {
       {
         title: 'Quy trình đặt thiết kế',
         slug: 'quy-trinh-dat-thiet-ke',
-        htmlContent: `<h2>Quy trình cung cấp dịch vụ thiết kế</h2>
-<p>Tại HOA VU BRANDING, chúng tôi áp dụng một quy trình làm việc chuẩn hóa, chuyên nghiệp nhằm tối ưu hóa thời gian và đảm bảo chất lượng sản phẩm thiết kế tốt nhất cho doanh nghiệp của bạn.</p>
+        htmlContent: `<p>Tại HOA VU BRANDING, chúng tôi áp dụng một quy trình làm việc chuẩn hóa, chuyên nghiệp nhằm tối ưu hóa thời gian và đảm bảo chất lượng sản phẩm thiết kế tốt nhất cho doanh nghiệp của bạn.</p>
 
 <h3>Bước 1: Tiếp nhận thông tin & Tư vấn</h3>
 <p>Khách hàng liên hệ với HOA VU qua Hotline, Zalo, Fanpage hoặc Form liên hệ. Chuyên viên tư vấn sẽ ghi nhận các yêu cầu cơ bản, mong muốn, phong cách hướng đến và định vị thương hiệu của doanh nghiệp. Sau đó, chúng tôi sẽ gửi bảng khảo sát (Creative Brief) để thu thập thông tin chi tiết.</p>
@@ -256,8 +254,7 @@ const seedData = async () => {
       {
         title: 'Chính sách bảo mật',
         slug: 'chinh-sach-bao-mat-thong-tin',
-        htmlContent: `<h2>Chính sách Bảo mật Thông tin & Dữ liệu Cá nhân</h2>
-<p>HOA VU BRANDING cam kết bảo vệ sự riêng tư và dữ liệu cá nhân của khách hàng theo đúng quy định tại <strong>Nghị định 13/2023/NĐ-CP về Bảo vệ dữ liệu cá nhân</strong>. Chính sách này mô tả cách chúng tôi thu thập, sử dụng và bảo vệ thông tin của bạn.</p>
+        htmlContent: `<p>HOA VU BRANDING cam kết bảo vệ sự riêng tư và dữ liệu cá nhân của khách hàng theo đúng quy định tại <strong>Nghị định 13/2023/NĐ-CP về Bảo vệ dữ liệu cá nhân</strong>. Chính sách này mô tả cách chúng tôi thu thập, sử dụng và bảo vệ thông tin của bạn.</p>
 
 <h3>1. Mục đích và Phạm vi thu thập thông tin</h3>
 <p>Chúng tôi chỉ thu thập các thông tin cần thiết phục vụ cho việc cung cấp dịch vụ, bao gồm:</p>
