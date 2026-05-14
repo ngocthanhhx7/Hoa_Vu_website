@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, useParams, useSearchParams } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
@@ -6,6 +6,7 @@ import Pagination from '../../components/common/Pagination';
 import ProjectGrid from '../../components/common/ProjectGrid';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
+import { SITE_URL } from '../../utils/seo';
 
 function ProjectsByCategoryPage() {
   const { category } = useParams();
@@ -38,14 +39,40 @@ function ProjectsByCategoryPage() {
     }).catch(() => {});
   }, [currentCategory, page]);
 
+  const breadcrumbItems = [{ label: 'Dự án', to: '/du-an' }, { label: currentCategory?.name || category }];
+
+  const projectsCategoryJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${SITE_URL}/du-an/${category}#collectionpage`,
+    name: currentCategory ? `Dự án ${currentCategory.name}` : 'Dự án thiết kế thương hiệu',
+    description: `Các dự án ${currentCategory?.name || 'thiết kế thương hiệu'} đã thực hiện bởi HOAVU BRANDING.`,
+    url: `${SITE_URL}/du-an/${category}`,
+    isPartOf: {
+      '@id': `${SITE_URL}/#website`,
+    },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: projects.length,
+      itemListElement: projects.map((project, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `${SITE_URL}/du-an/${project.category?.slug || category}/${project.slug}`,
+        name: project.title,
+      })),
+    },
+  };
+
   return (
     <>
       <SEO
         title={currentCategory ? `Dự án ${currentCategory.name}` : 'Dự án thiết kế thương hiệu'}
         description={`Các dự án ${currentCategory?.name || 'thiết kế thương hiệu'} đã thực hiện bởi HOAVU BRANDING.`}
         path={page > 1 ? `/du-an/${category}?page=${page}` : `/du-an/${category}`}
+        jsonLd={projectsCategoryJsonLd}
+        breadcrumbItems={breadcrumbItems}
       />
-      <HoaVuBreadcrumb items={[{ label: 'Dự án', to: '/du-an' }, { label: currentCategory?.name || category }]} />
+      <HoaVuBreadcrumb items={breadcrumbItems} />
       <section className="section">
         <Container>
           <h1 className="section-title">{currentCategory?.name || 'Danh mục dự án'}</h1>

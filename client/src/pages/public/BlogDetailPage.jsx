@@ -1,4 +1,4 @@
-﻿import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,7 +7,7 @@ import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 import { resolveMediaUrl } from '../../utils/media';
-import { absoluteUrl, buildCanonicalUrl, stripToText } from '../../utils/seo';
+import { SITE_URL, absoluteUrl, buildCanonicalUrl, stripToText } from '../../utils/seo';
 
 function BlogDetailPage() {
   const { category, slug } = useParams();
@@ -35,6 +35,46 @@ function BlogDetailPage() {
   const postPath = `/blog/${post.category?.slug || category}/${post.slug}`;
   const seoDescription = post.seo?.description || post.excerpt || stripToText(post.htmlContent);
   const seoImage = resolveMediaUrl(post.thumbnail);
+  const breadcrumbItems = [
+    { label: 'Blog', to: '/blog' },
+    { label: post.category?.name || category, to: `/blog/${post.category?.slug || category}` },
+    { label: post.title },
+  ];
+
+  const blogJsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      '@id': `${SITE_URL}${postPath}#blogposting`,
+      headline: post.title,
+      description: seoDescription,
+      url: buildCanonicalUrl(postPath),
+      image: seoImage ? absoluteUrl(seoImage) : undefined,
+      datePublished: post.createdAt,
+      dateModified: post.updatedAt || post.createdAt,
+      wordCount: stripToText(post.htmlContent).split(/\s+/).length || undefined,
+      inLanguage: 'vi-VN',
+      author: {
+        '@type': 'Person',
+        name: post.author?.name || 'Hoa Vu Team',
+      },
+      publisher: {
+        '@type': 'Organization',
+        '@id': `${SITE_URL}/#organization`,
+        name: 'HOAVU BRANDING',
+        logo: {
+          '@type': 'ImageObject',
+          url: absoluteUrl('/favicon-512x512.png'),
+        },
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': buildCanonicalUrl(postPath),
+      },
+      articleSection: post.category?.name || 'Blog',
+      keywords: (post.seo?.keywords || post.tags || []).join(', '),
+    },
+  ];
 
   return (
     <>
@@ -46,26 +86,10 @@ function BlogDetailPage() {
         imageAlt={post.title}
         type="article"
         keywords={post.seo?.keywords || post.tags}
-        jsonLd={{
-          '@context': 'https://schema.org',
-          '@type': 'BlogPosting',
-          headline: post.title,
-          description: seoDescription,
-          url: buildCanonicalUrl(postPath),
-          image: seoImage ? absoluteUrl(seoImage) : undefined,
-          datePublished: post.createdAt,
-          dateModified: post.updatedAt || post.createdAt,
-          author: {
-            '@type': 'Person',
-            name: post.author?.name || 'Hoa Vu Team',
-          },
-          publisher: {
-            '@type': 'Organization',
-            name: 'HOAVU BRANDING',
-          },
-        }}
+        jsonLd={blogJsonLd}
+        breadcrumbItems={breadcrumbItems}
       />
-      <HoaVuBreadcrumb items={[{ label: 'Blog', to: '/blog' }, { label: post.category?.name || category, to: `/blog/${post.category?.slug || category}` }, { label: post.title }]} />
+      <HoaVuBreadcrumb items={breadcrumbItems} />
       <section className="section">
         <Container>
           <Row>

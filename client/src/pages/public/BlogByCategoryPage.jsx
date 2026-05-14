@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { NavLink, useParams, useSearchParams } from 'react-router-dom';
 import BlogCard from '../../components/common/BlogCard';
@@ -6,6 +6,7 @@ import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import Pagination from '../../components/common/Pagination';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
+import { SITE_URL } from '../../utils/seo';
 
 function BlogByCategoryPage() {
   const { category } = useParams();
@@ -38,14 +39,40 @@ function BlogByCategoryPage() {
     }).catch(() => {});
   }, [currentCategory, page]);
 
+  const breadcrumbItems = [{ label: 'Blog', to: '/blog' }, { label: currentCategory?.name || category }];
+
+  const blogCategoryJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${SITE_URL}/blog/${category}#collectionpage`,
+    name: currentCategory ? `Blog ${currentCategory.name}` : 'Blog thiết kế thương hiệu',
+    description: `Bài viết ${currentCategory?.name || 'về thiết kế thương hiệu'} từ HOAVU BRANDING.`,
+    url: `${SITE_URL}/blog/${category}`,
+    isPartOf: {
+      '@id': `${SITE_URL}/#website`,
+    },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: posts.length,
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `${SITE_URL}/blog/${post.category?.slug || category}/${post.slug}`,
+        name: post.title,
+      })),
+    },
+  };
+
   return (
     <>
       <SEO
         title={currentCategory ? `Blog ${currentCategory.name}` : 'Blog thiết kế thương hiệu'}
         description={`Bài viết ${currentCategory?.name || 'về thiết kế thương hiệu'} từ HOAVU BRANDING.`}
         path={page > 1 ? `/blog/${category}?page=${page}` : `/blog/${category}`}
+        jsonLd={blogCategoryJsonLd}
+        breadcrumbItems={breadcrumbItems}
       />
-      <HoaVuBreadcrumb items={[{ label: 'Blog', to: '/blog' }, { label: currentCategory?.name || category }]} />
+      <HoaVuBreadcrumb items={breadcrumbItems} />
       <section className="section">
         <Container>
           <h1 className="section-title">{currentCategory?.name || 'Blog'}</h1>

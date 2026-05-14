@@ -1,4 +1,4 @@
-﻿import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { Link, useParams } from 'react-router-dom';
@@ -9,7 +9,7 @@ import SEO from '../../components/common/SEO';
 import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { publicAPI } from '../../services/api';
-import { buildCanonicalUrl, stripToText } from '../../utils/seo';
+import { SITE_URL, buildCanonicalUrl, stripToText } from '../../utils/seo';
 
 function ServiceDetailPage() {
   const { slug } = useParams();
@@ -37,6 +37,55 @@ function ServiceDetailPage() {
 
   const seoDescription = service.seo?.description || service.shortDescription || service.description || stripToText(service.htmlContent);
   const servicePath = `/dich-vu/${service.slug}`;
+  const breadcrumbItems = [{ label: 'Dịch vụ', to: '/dich-vu' }, { label: service.title }];
+
+  const serviceJsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      '@id': `${SITE_URL}${servicePath}#service`,
+      name: service.title,
+      description: seoDescription,
+      url: buildCanonicalUrl(servicePath),
+      image: service.heroImage ? buildCanonicalUrl(service.heroImage) : undefined,
+      provider: {
+        '@type': 'Organization',
+        '@id': `${SITE_URL}/#organization`,
+        name: 'HOAVU BRANDING',
+        url: buildCanonicalUrl('/'),
+      },
+      areaServed: {
+        '@type': 'Country',
+        name: 'Vietnam',
+      },
+      serviceType: service.title,
+      hasOfferCatalog: service.features?.length ? {
+        '@type': 'OfferCatalog',
+        name: `Tính năng ${service.title}`,
+        itemListElement: service.features.map((feature, index) => ({
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: feature,
+          },
+          position: index + 1,
+        })),
+      } : undefined,
+    },
+    // FAQ-like structured data from features if available
+    ...(service.features?.length > 0 ? [{
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: service.features.slice(0, 5).map((feature) => ({
+        '@type': 'Question',
+        name: `${service.title} bao gồm ${feature}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Có, dịch vụ ${service.title} của HOAVU BRANDING bao gồm ${feature}. Liên hệ để nhận tư vấn chi tiết.`,
+        },
+      })),
+    }] : []),
+  ];
 
   return (
     <>
@@ -46,21 +95,10 @@ function ServiceDetailPage() {
         path={servicePath}
         image={service.heroImage}
         keywords={service.seo?.keywords}
-        jsonLd={{
-          '@context': 'https://schema.org',
-          '@type': 'Service',
-          name: service.title,
-          description: seoDescription,
-          url: buildCanonicalUrl(servicePath),
-          provider: {
-            '@type': 'Organization',
-            name: 'HOAVU BRANDING',
-            url: buildCanonicalUrl('/'),
-          },
-          areaServed: 'VN',
-        }}
+        jsonLd={serviceJsonLd}
+        breadcrumbItems={breadcrumbItems}
       />
-      <HoaVuBreadcrumb items={[{ label: 'Dịch vụ', to: '/dich-vu' }, { label: service.title }]} />
+      <HoaVuBreadcrumb items={breadcrumbItems} />
       <HeroBanner title={service.title} description={service.description} ctaText="Liên hệ tư vấn" ctaLink="/lien-he" />
       <StatsCounter />
 

@@ -1,4 +1,4 @@
-﻿import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,7 +7,7 @@ import ProjectGrid from '../../components/common/ProjectGrid';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 import { normalizeMediaList, resolveMediaUrl } from '../../utils/media';
-import { absoluteUrl, buildCanonicalUrl, stripToText } from '../../utils/seo';
+import { SITE_URL, absoluteUrl, buildCanonicalUrl, stripToText } from '../../utils/seo';
 
 function ProjectDetailPage() {
   const { category, slug } = useParams();
@@ -42,6 +42,41 @@ function ProjectDetailPage() {
   const projectPath = `/du-an/${project.category?.slug || category}/${project.slug}`;
   const seoDescription = project.seo?.description || project.description || stripToText(project.htmlContent);
   const seoImage = resolveMediaUrl(project.thumbnail || visuals[0]);
+  const breadcrumbItems = [
+    { label: 'Dự án', to: '/du-an' },
+    { label: project.category?.name || category, to: `/du-an/${project.category?.slug || category}` },
+    { label: project.title },
+  ];
+
+  const projectImages = visuals.map((item) => absoluteUrl(resolveMediaUrl(item))).filter(Boolean);
+
+  const projectJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    '@id': `${SITE_URL}${projectPath}#creativework`,
+    name: project.title,
+    description: seoDescription,
+    url: buildCanonicalUrl(projectPath),
+    image: projectImages.length > 0 ? projectImages : (seoImage ? absoluteUrl(seoImage) : undefined),
+    dateCreated: project.createdAt,
+    dateModified: project.updatedAt || project.createdAt,
+    inLanguage: 'vi-VN',
+    creator: {
+      '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
+      name: 'HOAVU BRANDING',
+    },
+    genre: project.category?.name || 'Thiết kế thương hiệu',
+    keywords: (project.seo?.keywords || project.tags || []).join(', '),
+    about: project.client?.industry || project.category?.name || undefined,
+    ...(project.client?.name ? {
+      mentions: {
+        '@type': 'Organization',
+        name: project.client.name,
+        ...(project.client.industry ? { description: project.client.industry } : {}),
+      },
+    } : {}),
+  };
 
   return (
     <>
@@ -52,20 +87,10 @@ function ProjectDetailPage() {
         image={seoImage}
         imageAlt={project.title}
         keywords={project.seo?.keywords || project.tags}
-        jsonLd={{
-          '@context': 'https://schema.org',
-          '@type': 'CreativeWork',
-          name: project.title,
-          description: seoDescription,
-          url: buildCanonicalUrl(projectPath),
-          image: seoImage ? absoluteUrl(seoImage) : undefined,
-          creator: {
-            '@type': 'Organization',
-            name: 'HOAVU BRANDING',
-          },
-        }}
+        jsonLd={projectJsonLd}
+        breadcrumbItems={breadcrumbItems}
       />
-      <HoaVuBreadcrumb items={[{ label: 'Dự án', to: '/du-an' }, { label: project.category?.name || category, to: `/du-an/${project.category?.slug || category}` }, { label: project.title }]} />
+      <HoaVuBreadcrumb items={breadcrumbItems} />
       <section className="section project-detail-page">
         <Container>
           <Row className="justify-content-center">
@@ -181,4 +206,3 @@ function ProjectDetailPage() {
 }
 
 export default ProjectDetailPage;
-

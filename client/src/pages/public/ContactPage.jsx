@@ -1,10 +1,11 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Alert, Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { FiExternalLink, FiMapPin, FiMessageCircle } from 'react-icons/fi';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import SEO from '../../components/common/SEO';
 import { BRAND } from '../../config/brand';
 import { publicAPI } from '../../services/api';
+import { SITE_URL } from '../../utils/seo';
 
 function ContactPage() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', company: '', service: '', message: '' });
@@ -51,6 +52,29 @@ function ContactPage() {
     },
   ];
 
+  const breadcrumbItems = [{ label: 'Liên hệ' }];
+
+  const contactJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    '@id': `${SITE_URL}/lien-he#contactpage`,
+    name: 'Liên hệ HOAVU BRANDING',
+    description: 'Liên hệ HOAVU BRANDING để tư vấn thiết kế logo, nhận diện thương hiệu và visual truyền thông cho doanh nghiệp.',
+    url: `${SITE_URL}/lien-he`,
+    mainEntity: {
+      '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
+      name: BRAND.name,
+      url: SITE_URL,
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        url: BRAND.contact.messenger,
+        availableLanguage: ['Vietnamese'],
+      },
+    },
+  };
+
   return (
     <>
       <SEO
@@ -58,8 +82,10 @@ function ContactPage() {
         description="Liên hệ HOAVU BRANDING để tư vấn thiết kế logo, nhận diện thương hiệu và visual truyền thông cho doanh nghiệp."
         path="/lien-he"
         image={BRAND.logoFull}
+        jsonLd={contactJsonLd}
+        breadcrumbItems={breadcrumbItems}
       />
-      <HoaVuBreadcrumb items={[{ label: 'Liên hệ' }]} />
+      <HoaVuBreadcrumb items={breadcrumbItems} />
       <section className="contact-form-section">
         <Container>
           <Row>

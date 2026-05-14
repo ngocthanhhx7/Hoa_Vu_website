@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, useSearchParams } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
 import BlogCard from '../../components/common/BlogCard';
@@ -6,6 +6,7 @@ import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import Pagination from '../../components/common/Pagination';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
+import { SITE_URL } from '../../utils/seo';
 
 function BlogListPage() {
   const [searchParams] = useSearchParams();
@@ -31,6 +32,31 @@ function BlogListPage() {
     }).catch(() => {});
   }, [page]);
 
+  const breadcrumbItems = [{ label: 'Blog' }];
+
+  const blogListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${SITE_URL}/blog#collectionpage`,
+    name: 'Blog thiết kế thương hiệu',
+    description: 'Bài viết, ý tưởng và kinh nghiệm về thiết kế logo, nhận diện thương hiệu và xây dựng hình ảnh doanh nghiệp từ HOAVU BRANDING.',
+    url: `${SITE_URL}/blog`,
+    isPartOf: {
+      '@id': `${SITE_URL}/#website`,
+    },
+    mainEntity: {
+      '@type': 'ItemList',
+      name: 'Danh sách bài viết blog',
+      numberOfItems: posts.length,
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `${SITE_URL}/blog/${post.category?.slug || 'uncategorized'}/${post.slug}`,
+        name: post.title,
+      })),
+    },
+  };
+
   return (
     <>
       <SEO
@@ -38,8 +64,10 @@ function BlogListPage() {
         description="Bài viết, ý tưởng và kinh nghiệm về thiết kế logo, nhận diện thương hiệu và xây dựng hình ảnh doanh nghiệp từ HOAVU BRANDING."
         path={page > 1 ? `/blog?page=${page}` : '/blog'}
         keywords={['blog thiết kế logo', 'cẩm nang branding', 'ý tưởng nhận diện thương hiệu']}
+        jsonLd={blogListJsonLd}
+        breadcrumbItems={breadcrumbItems}
       />
-      <HoaVuBreadcrumb items={[{ label: 'Blog' }]} />
+      <HoaVuBreadcrumb items={breadcrumbItems} />
       <section className="section">
         <Container>
           <h1 className="section-title">Blog</h1>

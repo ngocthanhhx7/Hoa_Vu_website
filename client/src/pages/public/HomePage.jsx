@@ -9,6 +9,7 @@ import SEO from '../../components/common/SEO';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { BRAND } from '../../config/brand';
 import { publicAPI } from '../../services/api';
+import { SITE_URL, absoluteUrl } from '../../utils/seo';
 
 function HomePage() {
   const [projects, setProjects] = useState([]);
@@ -44,6 +45,65 @@ function HomePage() {
 
   const heroImages = bannerImages.length > 0 ? bannerImages : [BRAND.banner];
 
+  // LocalBusiness + ProfessionalService schema for homepage
+  const homeJsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ProfessionalService',
+      '@id': `${SITE_URL}/#localbusiness`,
+      name: BRAND.name,
+      alternateName: BRAND.shortName,
+      url: SITE_URL,
+      image: absoluteUrl(BRAND.defaultImage),
+      logo: absoluteUrl(BRAND.logoFull),
+      description: BRAND.seoDescription,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Hồ Chí Minh',
+        addressCountry: 'VN',
+      },
+      areaServed: {
+        '@type': 'Country',
+        name: 'Vietnam',
+      },
+      priceRange: '$$',
+      openingHoursSpecification: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        opens: '08:00',
+        closes: '18:00',
+      },
+      sameAs: [BRAND.contact.facebook].filter(Boolean),
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Dịch vụ thiết kế thương hiệu',
+        itemListElement: services.map((service, index) => ({
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: service.title,
+            description: service.shortDescription || service.description || '',
+            url: `${SITE_URL}/dich-vu/${service.slug}`,
+          },
+          position: index + 1,
+        })),
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'Dự án nổi bật của HOAVU BRANDING',
+      itemListOrder: 'https://schema.org/ItemListOrderDescending',
+      numberOfItems: projects.length,
+      itemListElement: projects.slice(0, 8).map((project, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `${SITE_URL}/du-an/${project.category?.slug || 'thiet-ke-logo'}/${project.slug}`,
+        name: project.title,
+      })),
+    },
+  ];
+
   return (
     <>
       <SEO
@@ -52,6 +112,7 @@ function HomePage() {
         path="/"
         image={BRAND.banner}
         keywords={['thiết kế logo', 'nhận diện thương hiệu', 'thiết kế branding', 'HOAVU BRANDING']}
+        jsonLd={homeJsonLd}
       />
       <h1 className="visually-hidden">HOAVU BRANDING - Thiết kế logo và nhận diện thương hiệu</h1>
 

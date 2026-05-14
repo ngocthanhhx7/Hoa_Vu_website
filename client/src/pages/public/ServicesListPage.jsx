@@ -1,9 +1,10 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
+import { SITE_URL } from '../../utils/seo';
 
 function ServicesListPage() {
   const [services, setServices] = useState([]);
@@ -16,6 +17,32 @@ function ServicesListPage() {
     }).catch(() => {});
   }, []);
 
+  const breadcrumbItems = [{ label: 'Dịch vụ' }];
+
+  const servicesJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${SITE_URL}/dich-vu#collectionpage`,
+    name: 'Dịch vụ thiết kế thương hiệu',
+    description: 'Khám phá các dịch vụ thiết kế logo, nhận diện thương hiệu và visual truyền thông của HOAVU BRANDING cho doanh nghiệp.',
+    url: `${SITE_URL}/dich-vu`,
+    isPartOf: {
+      '@id': `${SITE_URL}/#website`,
+    },
+    mainEntity: {
+      '@type': 'ItemList',
+      name: 'Danh sách dịch vụ thiết kế thương hiệu',
+      numberOfItems: services.length,
+      itemListElement: services.map((service, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `${SITE_URL}/dich-vu/${service.slug}`,
+        name: service.title,
+        description: service.shortDescription || service.description || '',
+      })),
+    },
+  };
+
   return (
     <>
       <SEO
@@ -23,8 +50,10 @@ function ServicesListPage() {
         description="Khám phá các dịch vụ thiết kế logo, nhận diện thương hiệu và visual truyền thông của HOAVU BRANDING cho doanh nghiệp."
         path="/dich-vu"
         keywords={['dịch vụ thiết kế logo', 'nhận diện thương hiệu', 'thiết kế thương hiệu']}
+        jsonLd={servicesJsonLd}
+        breadcrumbItems={breadcrumbItems}
       />
-      <HoaVuBreadcrumb items={[{ label: 'Dịch vụ' }]} />
+      <HoaVuBreadcrumb items={breadcrumbItems} />
       <section className="section">
         <Container>
           <h1 className="section-title">Dịch vụ</h1>

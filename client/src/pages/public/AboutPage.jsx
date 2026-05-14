@@ -5,6 +5,7 @@ import SEO from '../../components/common/SEO';
 // import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { BRAND } from '../../config/brand';
+import { SITE_URL, absoluteUrl } from '../../utils/seo';
 
 function AboutPage() {
   const steps = [
@@ -15,6 +16,32 @@ function AboutPage() {
     { num: 5, title: 'Đồng hành sau dự án', items: ['Hỗ trợ phát sinh hợp lý', 'Gợi ý triển khai thực tế', 'Duy trì đồng bộ thương hiệu'] },
   ];
 
+  const breadcrumbItems = [{ label: 'Giới thiệu' }];
+
+  const aboutJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    '@id': `${SITE_URL}/gioi-thieu#aboutpage`,
+    name: 'Giới thiệu HOAVU BRANDING',
+    description: 'Tìm hiểu về HOAVU BRANDING, studio thiết kế logo, nhận diện thương hiệu và visual truyền thông với quy trình làm việc rõ ràng.',
+    url: `${SITE_URL}/gioi-thieu`,
+    mainEntity: {
+      '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
+      name: BRAND.name,
+      url: SITE_URL,
+      logo: absoluteUrl(BRAND.logoFull),
+      description: BRAND.seoDescription,
+      slogan: 'Chuyên nghiệp - Sáng tạo - Tận tâm',
+      knowsAbout: [
+        'Thiết kế logo',
+        'Nhận diện thương hiệu',
+        'Visual truyền thông',
+        'Brand identity design',
+      ],
+    },
+  };
+
   return (
     <>
       <SEO
@@ -22,8 +49,10 @@ function AboutPage() {
         description="Tìm hiểu về HOAVU BRANDING, studio thiết kế logo, nhận diện thương hiệu và visual truyền thông với quy trình làm việc rõ ràng."
         path="/gioi-thieu"
         image={BRAND.logoFull}
+        jsonLd={aboutJsonLd}
+        breadcrumbItems={breadcrumbItems}
       />
-      <HoaVuBreadcrumb items={[{ label: 'Giới thiệu' }]} />
+      <HoaVuBreadcrumb items={breadcrumbItems} />
 
       <section className="section">
         <Container>
