@@ -289,7 +289,7 @@ const seedData = async () => {
     <li>Xóa bỏ hoàn toàn dữ liệu cá nhân khỏi hệ thống.</li>
     <li>Rút lại sự đồng ý cho phép xử lý dữ liệu.</li>
 </ul>
-<p>Để thực hiện các quyền này, Quý khách vui lòng liên hệ với chúng tôi qua Email: <strong>info@hoavu.vn</strong> hoặc Hotline: <strong>0889996399</strong>.</p>`,
+<p>Để thực hiện các quyền này, Quý khách vui lòng liên hệ với chúng tôi qua Email: <strong>hoavudesigns@gmail.com</strong> hoặc Hotline: <strong>0927969123</strong>.</p>`,
       },
     ]);
 
