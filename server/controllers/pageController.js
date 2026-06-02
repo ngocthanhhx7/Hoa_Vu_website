@@ -58,6 +58,7 @@ function sanitizeBannerImages(bannerImages = []) {
   return bannerImages
     .filter((banner) => banner && String(banner.url || '').trim())
     .map((banner, index) => ({
+      _id: banner._id || undefined,
       url: normalizeBannerUrl(banner.url),
       order: Number.isFinite(Number(banner.order)) ? Number(banner.order) : index,
       isActive: banner.isActive !== false,

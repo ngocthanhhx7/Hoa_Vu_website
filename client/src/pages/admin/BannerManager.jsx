@@ -18,8 +18,13 @@ function BannerManager() {
     setLoading(true);
     try {
       const res = await adminAPI.getBanners();
-      setBanners(res.data?.data || []);
-    } catch {
+      const loadedBanners = (res.data?.data || []).map((banner, index) => ({
+        ...banner,
+        _id: banner._id || `banner-id-${Date.now()}-${index}-${Math.random()}`
+      }));
+      setBanners(loadedBanners);
+    } catch (err) {
+      console.error('Lỗi tải danh sách banner:', err);
       setFeedback({ type: 'danger', msg: 'Không thể tải danh sách banner.' });
     } finally {
       setLoading(false);
@@ -27,7 +32,7 @@ function BannerManager() {
   }
 
   function addBanner() {
-    setBanners((prev) => [...prev, { url: '', order: prev.length, isActive: true }]);
+    setBanners((prev) => [...prev, { _id: `banner-id-${Date.now()}-${Math.random()}`, url: '', order: prev.length, isActive: true }]);
   }
 
   function updateBanner(index, field, value) {
@@ -96,10 +101,15 @@ function BannerManager() {
       }));
 
       const res = await adminAPI.updateBanners(ordered);
-      setBanners(res.data?.data || ordered);
+      const updatedBanners = (res.data?.data || ordered).map((banner, index) => ({
+        ...banner,
+        _id: banner._id || `banner-id-${Date.now()}-${index}-${Math.random()}`
+      }));
+      setBanners(updatedBanners);
       setFeedback({ type: 'success', msg: 'Đã lưu banner thành công.' });
-    } catch {
-      setFeedback({ type: 'danger', msg: 'Lưu banner thất bại. Vui lòng thử lại.' });
+    } catch (err) {
+      console.error('Lỗi khi lưu danh sách banner:', err);
+      setFeedback({ type: 'danger', msg: err.response?.data?.message || err.message || 'Lưu banner thất bại. Vui lòng thử lại.' });
     } finally {
       setSaving(false);
     }
