@@ -22,6 +22,16 @@ export function SettingsProvider({ children }) {
     }
   };
 
+  const ensureHexHash = (val, fallback = '#000000') => {
+    if (!val) return fallback;
+    const clean = val.trim();
+    if (clean.startsWith('#')) return clean;
+    if (/^[0-9A-F]{3}$|^[0-9A-F]{6}$/i.test(clean)) {
+      return `#${clean}`;
+    }
+    return clean;
+  };
+
   const applySettings = (data) => {
     if (!data) return;
 
@@ -30,14 +40,16 @@ export function SettingsProvider({ children }) {
     if (data.theme) {
       const { primaryColor, accentColor, fontFamily } = data.theme;
       if (primaryColor) {
-        root.style.setProperty('--primary', primaryColor);
-        root.style.setProperty('--color-primary', primaryColor);
-        root.style.setProperty('--primary-dark', primaryColor);
-        root.style.setProperty('--primary-light', primaryColor);
+        const formattedPrimary = ensureHexHash(primaryColor, '#D2232A');
+        root.style.setProperty('--primary', formattedPrimary);
+        root.style.setProperty('--color-primary', formattedPrimary);
+        root.style.setProperty('--primary-dark', formattedPrimary);
+        root.style.setProperty('--primary-light', formattedPrimary);
       }
       if (accentColor) {
-        root.style.setProperty('--accent', accentColor);
-        root.style.setProperty('--color-accent', accentColor);
+        const formattedAccent = ensureHexHash(accentColor, '#FF6B35');
+        root.style.setProperty('--accent', formattedAccent);
+        root.style.setProperty('--color-accent', formattedAccent);
       }
       if (fontFamily) {
         root.style.setProperty('--font-primary', `${fontFamily}, 'SVN-Avo', 'UTM Avo', sans-serif`);

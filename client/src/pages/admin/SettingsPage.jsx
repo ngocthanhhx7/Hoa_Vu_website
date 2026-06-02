@@ -3,6 +3,16 @@ import { Alert, Button, Col, Form, Row, Tabs, Tab, Card, Spinner } from 'react-b
 import { FiUpload, FiTrash2, FiGlobe, FiPhone, FiShare2, FiSliders, FiMessageSquare, FiInfo } from 'react-icons/fi';
 import { adminAPI } from '../../services/api';
 
+const ensureHexHash = (val, fallback = '#000000') => {
+  if (!val) return fallback;
+  const clean = val.trim();
+  if (clean.startsWith('#')) return clean;
+  if (/^[0-9A-F]{3}$|^[0-9A-F]{6}$/i.test(clean)) {
+    return `#${clean}`;
+  }
+  return clean;
+};
+
 function SettingsPage() {
   const [form, setForm] = useState(null);
   const [alert, setAlert] = useState(null);
@@ -105,6 +115,11 @@ function SettingsPage() {
       }
       const payload = {
         ...form,
+        theme: {
+          ...form.theme,
+          primaryColor: ensureHexHash(form.theme.primaryColor, '#D2232A'),
+          accentColor: ensureHexHash(form.theme.accentColor, '#FF6B35'),
+        },
         chatbotConfig: {
           ...form.chatbotConfig,
           quickReplies: qReplies,
@@ -300,8 +315,18 @@ function SettingsPage() {
                       <Form.Group>
                         <Form.Label className="fw-bold">Màu sắc chính (Primary Color)</Form.Label>
                         <div className="d-flex align-items-center gap-2">
-                          <Form.Control type="color" value={form.theme.primaryColor || '#D2232A'} onChange={(e) => setNested('theme.primaryColor', e.target.value)} style={{ width: 60, height: 40, padding: 2, cursor: 'pointer' }} />
-                          <Form.Control value={form.theme.primaryColor || ''} onChange={(e) => setNested('theme.primaryColor', e.target.value)} placeholder="#D2232A" />
+                          <Form.Control 
+                            type="color" 
+                            value={ensureHexHash(form.theme.primaryColor, '#D2232A')} 
+                            onChange={(e) => setNested('theme.primaryColor', e.target.value)} 
+                            style={{ width: 60, height: 40, padding: 2, cursor: 'pointer' }} 
+                          />
+                          <Form.Control 
+                            value={form.theme.primaryColor || ''} 
+                            onChange={(e) => setNested('theme.primaryColor', e.target.value)} 
+                            onBlur={(e) => setNested('theme.primaryColor', ensureHexHash(e.target.value, '#D2232A'))}
+                            placeholder="#D2232A" 
+                          />
                         </div>
                       </Form.Group>
                     </Col>
@@ -310,8 +335,18 @@ function SettingsPage() {
                       <Form.Group>
                         <Form.Label className="fw-bold">Màu nhấn (Accent Color)</Form.Label>
                         <div className="d-flex align-items-center gap-2">
-                          <Form.Control type="color" value={form.theme.accentColor || '#FF6B35'} onChange={(e) => setNested('theme.accentColor', e.target.value)} style={{ width: 60, height: 40, padding: 2, cursor: 'pointer' }} />
-                          <Form.Control value={form.theme.accentColor || ''} onChange={(e) => setNested('theme.accentColor', e.target.value)} placeholder="#FF6B35" />
+                          <Form.Control 
+                            type="color" 
+                            value={ensureHexHash(form.theme.accentColor, '#FF6B35')} 
+                            onChange={(e) => setNested('theme.accentColor', e.target.value)} 
+                            style={{ width: 60, height: 40, padding: 2, cursor: 'pointer' }} 
+                          />
+                          <Form.Control 
+                            value={form.theme.accentColor || ''} 
+                            onChange={(e) => setNested('theme.accentColor', e.target.value)} 
+                            onBlur={(e) => setNested('theme.accentColor', ensureHexHash(e.target.value, '#FF6B35'))}
+                            placeholder="#FF6B35" 
+                          />
                         </div>
                       </Form.Group>
                     </Col>
@@ -443,12 +478,12 @@ function SettingsPage() {
                       {form.logo ? (
                         <img src={form.logo} alt="Logo" style={{ height: 18, width: 'auto', objectFit: 'contain' }} />
                       ) : (
-                        <span style={{ fontWeight: 800, color: form.theme.primaryColor || '#D2232A', fontSize: 11 }}>
+                        <span style={{ fontWeight: 800, color: ensureHexHash(form.theme.primaryColor, '#D2232A'), fontSize: 11 }}>
                           {form.companyName || 'HOAVU'}
                         </span>
                       )}
                       <div className="d-flex gap-3 align-items-center" style={{ fontSize: 9, fontWeight: 700, color: '#374151' }}>
-                        <span style={{ color: form.theme.primaryColor || '#D2232A' }}>TRANG CHỦ</span>
+                        <span style={{ color: ensureHexHash(form.theme.primaryColor, '#D2232A') }}>TRANG CHỦ</span>
                         <span>DỊCH VỤ</span>
                         <span>DỰ ÁN</span>
                       </div>
@@ -458,7 +493,7 @@ function SettingsPage() {
                     <div style={{
                       flex: 1,
                       padding: '40px 20px',
-                      background: `linear-gradient(135deg, ${form.theme.primaryColor || '#D2232A'}e0 0%, ${form.theme.primaryColor || '#D2232A'} 100%)`,
+                      background: `linear-gradient(135deg, ${ensureHexHash(form.theme.primaryColor, '#D2232A')}e0 0%, ${ensureHexHash(form.theme.primaryColor, '#D2232A')} 100%)`,
                       color: '#fff',
                       textAlign: 'center',
                       display: 'flex',
@@ -475,7 +510,7 @@ function SettingsPage() {
                         {form.tagline || 'Nâng tầm thương hiệu'}
                       </p>
                       <button style={{
-                        background: form.theme.accentColor || '#FF6B35',
+                        background: ensureHexHash(form.theme.accentColor, '#FF6B35'),
                         border: 'none',
                         color: '#fff',
                         padding: '8px 18px',
@@ -521,17 +556,17 @@ function SettingsPage() {
                 <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10, color: '#4b5563' }}>Bảng màu chủ đề đang chọn:</div>
                 <div className="d-flex align-items-center gap-4">
                   <div className="d-flex align-items-center gap-2">
-                    <div style={{ width: 28, height: 28, borderRadius: 6, background: form.theme.primaryColor || '#D2232A', border: '1px solid #e5e7eb' }} />
+                    <div style={{ width: 28, height: 28, borderRadius: 6, background: ensureHexHash(form.theme.primaryColor, '#D2232A'), border: '1px solid #e5e7eb' }} />
                     <div style={{ fontSize: 11 }}>
                       <div style={{ fontWeight: 600 }}>Màu chính</div>
-                      <code className="text-muted small">{form.theme.primaryColor || '#D2232A'}</code>
+                      <code className="text-muted small">{ensureHexHash(form.theme.primaryColor, '#D2232A')}</code>
                     </div>
                   </div>
                   <div className="d-flex align-items-center gap-2">
-                    <div style={{ width: 28, height: 28, borderRadius: 6, background: form.theme.accentColor || '#FF6B35', border: '1px solid #e5e7eb' }} />
+                    <div style={{ width: 28, height: 28, borderRadius: 6, background: ensureHexHash(form.theme.accentColor, '#FF6B35'), border: '1px solid #e5e7eb' }} />
                     <div style={{ fontSize: 11 }}>
                       <div style={{ fontWeight: 600 }}>Màu nhấn</div>
-                      <code className="text-muted small">{form.theme.accentColor || '#FF6B35'}</code>
+                      <code className="text-muted small">{ensureHexHash(form.theme.accentColor, '#FF6B35')}</code>
                     </div>
                   </div>
                 </div>
