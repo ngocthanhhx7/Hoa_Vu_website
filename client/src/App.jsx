@@ -30,6 +30,8 @@ import ServiceManager from './pages/admin/ServiceManager';
 import SettingsPage from './pages/admin/SettingsPage';
 import TestimonialManager from './pages/admin/TestimonialManager';
 
+import { SettingsProvider } from './context/SettingsContext';
+
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('hoavu_admin_token');
   return token ? children : <Navigate replace to="/admin/login" />;
@@ -38,9 +40,10 @@ function ProtectedRoute({ children }) {
 function App() {
   return (
     <HelmetProvider>
-      <Router>
-        <Routes>
-          <Route element={<MainLayout />}>
+      <SettingsProvider>
+        <Router>
+          <Routes>
+            <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/gioi-thieu" element={<AboutPage />} />
             <Route path="/dich-vu" element={<ServicesListPage />} />
@@ -79,6 +82,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      </SettingsProvider>
     </HelmetProvider>
   );
 }

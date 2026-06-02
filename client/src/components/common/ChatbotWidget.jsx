@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { FiMessageSquare, FiX, FiSend } from 'react-icons/fi';
+import { useSettings } from '../../context/SettingsContext';
 import { publicAPI } from '../../services/api';
 import { BRAND } from '../../config/brand';
 
@@ -7,37 +8,23 @@ const DEFAULT_GREETING = 'Xin chào! Tôi là trợ lý AI của doanh nghiệp.
 const DEFAULT_QUICK_REPLIES = ['Dịch vụ', 'Nhận báo giá', 'Xem dự án', 'Liên hệ tư vấn'];
 
 function ChatbotWidget() {
+  const { settings } = useSettings();
+  const chatbotConfig = settings?.chatbotConfig || {};
+  const greeting = chatbotConfig.greeting || DEFAULT_GREETING;
+  const facebookUrl = settings?.socialLinks?.facebook || BRAND.contact.facebook;
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [greeting, setGreeting] = useState(DEFAULT_GREETING);
   const [quickReplies, setQuickReplies] = useState(DEFAULT_QUICK_REPLIES);
   const sessionId = useId();
   const messagesRef = useRef(null);
 
   useEffect(() => {
-    let isMounted = true;
-
-    publicAPI.getSettings()
-      .then((res) => {
-        if (!isMounted || !res.data?.success) {
-          return;
-        }
-
-        const chatbotConfig = res.data.data?.chatbotConfig || {};
-        if (chatbotConfig.greeting) {
-          setGreeting(chatbotConfig.greeting);
-        }
-        if (Array.isArray(chatbotConfig.quickReplies) && chatbotConfig.quickReplies.length > 0) {
-          setQuickReplies(chatbotConfig.quickReplies);
-        }
-      })
-      .catch(() => {});
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    if (Array.isArray(chatbotConfig.quickReplies) && chatbotConfig.quickReplies.length > 0) {
+      setQuickReplies(chatbotConfig.quickReplies);
+    }
+  }, [settings]);
 
   useEffect(() => {
     if (messagesRef.current) {

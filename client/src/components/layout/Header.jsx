@@ -1,16 +1,22 @@
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link, NavLink } from 'react-router-dom';
 import { BRAND } from '../../config/brand';
+import { useSettings } from '../../context/SettingsContext';
 
 function Header() {
+  const { settings } = useSettings();
+  const companyLogo = settings?.logo || BRAND.logoMark;
+  const companyName = settings?.companyName || BRAND.name;
+  const facebookUrl = settings?.socialLinks?.facebook || BRAND.contact.facebook;
+
   return (
     <header className="site-header">
       <Navbar expand="lg" style={{ background: 'rgba(255,255,255,0.96)', boxShadow: 'var(--shadow-sm)', padding: '12px 0' }}>
         <Container>
           <Navbar.Brand as={Link} to="/" className="d-flex align-items-center flex-shrink-0">
             <img
-              src={BRAND.logoMark}
-              alt={BRAND.name}
+              src={companyLogo}
+              alt={companyName}
               style={{ height: 30, width: 'auto', maxWidth: 180, objectFit: 'contain', display: 'block' }}
             />
           </Navbar.Brand>
@@ -41,7 +47,7 @@ function Header() {
             </Nav>
 
             <a
-              href={BRAND.contact.facebook}
+              href={facebookUrl}
               target="_blank"
               rel="noreferrer"
               className="btn-hoavu btn-hoavu--primary d-none d-lg-inline-flex"

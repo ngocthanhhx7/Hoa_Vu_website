@@ -5,13 +5,19 @@ import { FiArrowRight, FiAward, FiEye, FiHeart, FiMessageCircle, FiTarget } from
 import HeroBanner from '../../components/common/HeroBanner';
 import ProjectGrid from '../../components/common/ProjectGrid';
 import SEO from '../../components/common/SEO';
-// import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { BRAND } from '../../config/brand';
 import { publicAPI } from '../../services/api';
 import { SITE_URL, absoluteUrl } from '../../utils/seo';
+import { useSettings } from '../../context/SettingsContext';
 
 function HomePage() {
+  const { settings } = useSettings();
+  const companyName = settings?.companyName || BRAND.name;
+  const companyLogo = settings?.logo || BRAND.logoFull;
+  const tagline = settings?.tagline || BRAND.description;
+  const facebookUrl = settings?.socialLinks?.facebook || BRAND.contact.facebook;
+
   const [projects, setProjects] = useState([]);
   const [services, setServices] = useState([]);
   const [bannerImages, setBannerImages] = useState([]);
@@ -51,12 +57,12 @@ function HomePage() {
       '@context': 'https://schema.org',
       '@type': 'ProfessionalService',
       '@id': `${SITE_URL}/#localbusiness`,
-      name: BRAND.name,
+      name: companyName,
       alternateName: BRAND.shortName,
       url: SITE_URL,
       image: absoluteUrl(BRAND.defaultImage),
-      logo: absoluteUrl(BRAND.logoFull),
-      description: BRAND.seoDescription,
+      logo: absoluteUrl(companyLogo),
+      description: settings?.footerText || BRAND.seoDescription,
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Hồ Chí Minh',
@@ -73,7 +79,7 @@ function HomePage() {
         opens: '08:00',
         closes: '18:00',
       },
-      sameAs: [BRAND.contact.facebook].filter(Boolean),
+      sameAs: [facebookUrl].filter(Boolean),
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
         name: 'Dịch vụ thiết kế thương hiệu',
@@ -108,13 +114,13 @@ function HomePage() {
     <>
       <SEO
         title="Thiết kế logo và nhận diện thương hiệu"
-        description={BRAND.seoDescription}
+        description={settings?.footerText || BRAND.seoDescription}
         path="/"
         image={BRAND.banner}
-        keywords={['thiết kế logo', 'nhận diện thương hiệu', 'thiết kế branding', 'HOAVU BRANDING']}
+        keywords={['thiết kế logo', 'nhận diện thương hiệu', 'thiết kế branding', companyName]}
         jsonLd={homeJsonLd}
       />
-      <h1 className="visually-hidden">HOAVU BRANDING - Thiết kế logo và nhận diện thương hiệu</h1>
+      <h1 className="visually-hidden">{companyName} - {tagline}</h1>
 
       <HeroBanner bannerImages={heroImages} />
 
@@ -171,7 +177,7 @@ function HomePage() {
         <Container>
           <h2 className="section-title">Dự án</h2>
           <p className="mb-4" style={{ color: 'var(--gray-600)' }}>
-            Một số dự án nổi bật thể hiện cách {BRAND.shortName} triển khai mood thương hiệu, logo và chất liệu thị giác đồng nhất.
+            Một số dự án nổi bật thể hiện cách {companyName} triển khai mood thương hiệu, logo và chất liệu thị giác đồng nhất.
           </p>
           <ProjectGrid projects={projects} />
           <div className="text-center mt-4">

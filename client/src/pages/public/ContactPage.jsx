@@ -6,8 +6,16 @@ import SEO from '../../components/common/SEO';
 import { BRAND } from '../../config/brand';
 import { publicAPI } from '../../services/api';
 import { SITE_URL } from '../../utils/seo';
+import { useSettings } from '../../context/SettingsContext';
 
 function ContactPage() {
+  const { settings } = useSettings();
+  const facebookUrl = settings?.socialLinks?.facebook || BRAND.contact.facebook;
+  const messengerUrl = facebookUrl ? facebookUrl.replace(/facebook\.com/i, 'm.me').replace(/www\./i, '') : BRAND.contact.messenger;
+  const address = settings?.address || BRAND.contact.address;
+  const logo = settings?.logo || BRAND.logoFull;
+  const companyName = settings?.companyName || BRAND.name;
+
   const [form, setForm] = useState({ name: '', phone: '', email: '', company: '', service: '', message: '' });
   const [status, setStatus] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
@@ -40,15 +48,15 @@ function ContactPage() {
   const contactCards = [
     {
       label: 'Fanpage chính thức',
-      value: '@hoavubranding',
+      value: settings?.companyName ? `@${settings.companyName.toLowerCase().replace(/\s+/g, '')}` : '@hoavubranding',
       icon: <FiExternalLink style={{ marginRight: 8 }} />,
-      href: BRAND.contact.facebook,
+      href: facebookUrl,
     },
     {
       label: 'Messenger',
       value: 'Nhắn tin trực tiếp để nhận tư vấn',
       icon: <FiMessageCircle style={{ marginRight: 8 }} />,
-      href: BRAND.contact.messenger,
+      href: messengerUrl,
     },
   ];
 
@@ -58,18 +66,18 @@ function ContactPage() {
     '@context': 'https://schema.org',
     '@type': 'ContactPage',
     '@id': `${SITE_URL}/lien-he#contactpage`,
-    name: 'Liên hệ HOAVU BRANDING',
-    description: 'Liên hệ HOAVU BRANDING để tư vấn thiết kế logo, nhận diện thương hiệu và visual truyền thông cho doanh nghiệp.',
+    name: `Liên hệ ${companyName}`,
+    description: `Liên hệ ${companyName} để tư vấn thiết kế logo, nhận diện thương hiệu và visual truyền thông cho doanh nghiệp.`,
     url: `${SITE_URL}/lien-he`,
     mainEntity: {
       '@type': 'Organization',
       '@id': `${SITE_URL}/#organization`,
-      name: BRAND.name,
+      name: companyName,
       url: SITE_URL,
       contactPoint: {
         '@type': 'ContactPoint',
         contactType: 'customer service',
-        url: BRAND.contact.messenger,
+        url: messengerUrl,
         availableLanguage: ['Vietnamese'],
       },
     },
@@ -79,9 +87,9 @@ function ContactPage() {
     <>
       <SEO
         title="Liên hệ tư vấn thiết kế thương hiệu"
-        description="Liên hệ HOAVU BRANDING để tư vấn thiết kế logo, nhận diện thương hiệu và visual truyền thông cho doanh nghiệp."
+        description={`Liên hệ ${companyName} để tư vấn thiết kế logo, nhận diện thương hiệu và visual truyền thông cho doanh nghiệp.`}
         path="/lien-he"
-        image={BRAND.logoFull}
+        image={logo}
         jsonLd={contactJsonLd}
         breadcrumbItems={breadcrumbItems}
       />
@@ -92,7 +100,7 @@ function ContactPage() {
             <Col lg={7} className="mb-4">
               <h1 className="section-title">Đăng ký tư vấn</h1>
               <p style={{ color: 'var(--gray-600)', marginTop: 16 }}>
-                Để phản hồi nhanh nhất, bạn có thể để lại form hoặc nhắn trực tiếp qua fanpage Hoa Vu Branding.
+                Để phản hồi nhanh nhất, bạn có thể để lại form hoặc nhắn trực tiếp qua fanpage {companyName}.
               </p>
               {status.message ? <Alert variant={status.type} className="mt-3">{status.message}</Alert> : null}
               <Form onSubmit={handleSubmit} className="contact-form mt-4">
@@ -127,10 +135,10 @@ function ContactPage() {
               ))}
               <div className="contact-info-card mt-3">
                 <p style={{ fontSize: 14, marginBottom: 10 }}>
-                  <FiMapPin style={{ marginRight: 8, color: 'var(--primary)' }} />
-                  {BRAND.contact.address}
+                  <FiMapPin style={{ marginRight: 8, color: 'var(--primary)', flexShrink: 0 }} />
+                  {address}
                 </p>
-                <p style={{ fontSize: 14, marginBottom: 0, color: 'var(--gray-600)' }}>{BRAND.contact.supportText}</p>
+                <p style={{ fontSize: 14, marginBottom: 0, color: 'var(--gray-600)' }}>{settings?.tagline || BRAND.contact.supportText}</p>
               </div>
             </Col>
           </Row>

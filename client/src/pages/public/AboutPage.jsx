@@ -2,12 +2,17 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import SEO from '../../components/common/SEO';
-// import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { BRAND } from '../../config/brand';
 import { SITE_URL, absoluteUrl } from '../../utils/seo';
+import { useSettings } from '../../context/SettingsContext';
 
 function AboutPage() {
+  const { settings } = useSettings();
+  const companyName = settings?.companyName || BRAND.name;
+  const companyLogo = settings?.logo || BRAND.logoFull;
+  const tagline = settings?.tagline || BRAND.description;
+
   const steps = [
     { num: 1, title: 'Tiếp nhận thông tin', items: ['Nhận brief từ khách hàng', 'Làm rõ mục tiêu truyền thông', 'Chốt định hướng thẩm mỹ'] },
     { num: 2, title: 'Thỏa thuận và ký kết', items: ['Báo giá minh bạch', 'Thống nhất deliverables', 'Khóa timeline triển khai'] },
@@ -22,17 +27,17 @@ function AboutPage() {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
     '@id': `${SITE_URL}/gioi-thieu#aboutpage`,
-    name: 'Giới thiệu HOAVU BRANDING',
-    description: 'Tìm hiểu về HOAVU BRANDING, studio thiết kế logo, nhận diện thương hiệu và visual truyền thông với quy trình làm việc rõ ràng.',
+    name: `Giới thiệu ${companyName}`,
+    description: `Tìm hiểu về ${companyName}, studio thiết kế logo, nhận diện thương hiệu và visual truyền thông với quy trình làm việc rõ ràng.`,
     url: `${SITE_URL}/gioi-thieu`,
     mainEntity: {
       '@type': 'Organization',
       '@id': `${SITE_URL}/#organization`,
-      name: BRAND.name,
+      name: companyName,
       url: SITE_URL,
-      logo: absoluteUrl(BRAND.logoFull),
-      description: BRAND.seoDescription,
-      slogan: 'Chuyên nghiệp - Sáng tạo - Tận tâm',
+      logo: absoluteUrl(companyLogo),
+      description: settings?.footerText || BRAND.seoDescription,
+      slogan: tagline,
       knowsAbout: [
         'Thiết kế logo',
         'Nhận diện thương hiệu',
@@ -46,9 +51,9 @@ function AboutPage() {
     <>
       <SEO
         title="Giới thiệu"
-        description="Tìm hiểu về HOAVU BRANDING, studio thiết kế logo, nhận diện thương hiệu và visual truyền thông với quy trình làm việc rõ ràng."
+        description={`Tìm hiểu về ${companyName}, studio thiết kế logo, nhận diện thương hiệu và visual truyền thông với quy trình làm việc rõ ràng.`}
         path="/gioi-thieu"
-        image={BRAND.logoFull}
+        image={companyLogo}
         jsonLd={aboutJsonLd}
         breadcrumbItems={breadcrumbItems}
       />
@@ -60,7 +65,7 @@ function AboutPage() {
             <Col lg={7}>
               <h1 className="section-title">Về chúng tôi</h1>
               <p className="mt-3" style={{ lineHeight: 1.8, color: 'var(--gray-700)' }}>
-                {BRAND.name} là studio tập trung vào logo, nhận diện thương hiệu và visual truyền thông cho doanh nghiệp cần một hình ảnh tinh gọn nhưng vẫn đủ độ sang và khác biệt.
+                {companyName} là studio tập trung vào logo, nhận diện thương hiệu và visual truyền thông cho doanh nghiệp cần một hình ảnh tinh gọn nhưng vẫn đủ độ sang và khác biệt.
               </p>
               <p style={{ lineHeight: 1.8, color: 'var(--gray-700)' }}>
                 Chúng tôi ưu tiên tiến trình rõ ràng, cảm quan cao cấp và khả năng biến tinh thần thương hiệu thành hệ thống hình ảnh có thể dùng thật trên nhiều nền tảng.
@@ -72,7 +77,7 @@ function AboutPage() {
             </Col>
             <Col lg={5} className="text-center mt-4 mt-lg-0">
               <div style={{ padding: 24, borderRadius: '32px', background: 'linear-gradient(145deg, rgba(16,63,173,0.12), rgba(242,205,69,0.14))', boxShadow: 'var(--shadow-lg)' }}>
-                <img src={BRAND.logoFull} alt={BRAND.name} style={{ width: 'min(100%, 320px)', display: 'block', margin: '0 auto' }} />
+                <img src={companyLogo} alt={companyName} style={{ width: 'min(100%, 320px)', display: 'block', margin: '0 auto' }} />
               </div>
             </Col>
           </Row>
