@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Alert, Button, Col, Form, Row, Tabs, Tab, Card, Spinner } from 'react-bootstrap';
 import { FiUpload, FiTrash2, FiGlobe, FiPhone, FiShare2, FiSliders, FiMessageSquare, FiInfo } from 'react-icons/fi';
 import { adminAPI } from '../../services/api';
+import { useSettings } from '../../context/SettingsContext';
 
 const ensureHexHash = (val, fallback = '#000000') => {
   if (!val) return fallback;
@@ -14,6 +15,7 @@ const ensureHexHash = (val, fallback = '#000000') => {
 };
 
 function SettingsPage() {
+  const { refreshSettings } = useSettings();
   const [form, setForm] = useState(null);
   const [alert, setAlert] = useState(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -126,6 +128,7 @@ function SettingsPage() {
         },
       };
       await adminAPI.updateSettings(payload);
+      refreshSettings();
       setAlert({ type: 'success', msg: 'Cập nhật cài đặt thành công.' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {

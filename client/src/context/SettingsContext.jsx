@@ -1,28 +1,20 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useLayoutEffect } from 'react';
 import { publicAPI } from '../services/api';
-
-const SettingsContext = createContext(null);
+import { SettingsContext } from './settingsContextCore';
+export { useSettings } from './useSettings';
 
 export function SettingsProvider({ children }) {
-  const [settings, setSettings] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const fetchSettings = async () => {
+  const [settings, setSettings] = useState(() => {
     try {
-      const res = await publicAPI.getSettings();
-      if (res.data?.success) {
-        const data = res.data.data;
-        setSettings(data);
-        applySettings(data);
-      }
-    } catch (err) {
-      console.error('Failed to load site settings:', err);
-    } finally {
-      setLoading(false);
+      const cached = localStorage.getItem('hoavu_site_settings');
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
     }
-  };
+  });
+  const [loading, setLoading] = useState(!settings);
 
-  const ensureHexHash = (val, fallback = '#000000') => {
+  const ensureHexHash = useCallback((val, fallback = '#000000') => {
     if (!val) return fallback;
     const clean = val.trim();
     if (clean.startsWith('#')) return clean;
@@ -30,9 +22,9 @@ export function SettingsProvider({ children }) {
       return `#${clean}`;
     }
     return clean;
-  };
+  }, []);
 
-  const applySettings = (data) => {
+  const applySettings = useCallback((data) => {
     if (!data) return;
 
     // Apply colors and typography to :root stylesheet properties
@@ -77,23 +69,40 @@ export function SettingsProvider({ children }) {
         appleIcon.href = data.favicon;
       }
     }
-  };
+  }, [ensureHexHash]);
+
+  useLayoutEffect(() => {
+    if (settings) {
+      applySettings(settings);
+    }
+  }, [settings, applySettings]);
+
+  const fetchSettings = useCallback(async () => {
+    try {
+      const res = await publicAPI.getSettings();
+      if (res.data?.success) {
+        const data = res.data.data;
+        setSettings(data);
+        try {
+          localStorage.setItem('hoavu_site_settings', JSON.stringify(data));
+        } catch (err) {
+          console.warn('Failed to save settings to localStorage:', err);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load site settings:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchSettings();
-  }, []);
+  }, [fetchSettings]);
 
   return (
     <SettingsContext.Provider value={{ settings, loading, refreshSettings: fetchSettings }}>
       {children}
     </SettingsContext.Provider>
   );
-}
-
-export function useSettings() {
-  const context = useContext(SettingsContext);
-  if (!context) {
-    return { settings: null, loading: false, refreshSettings: () => {} };
-  }
-  return context;
 }
