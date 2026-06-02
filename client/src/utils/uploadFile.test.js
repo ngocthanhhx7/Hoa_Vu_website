@@ -48,6 +48,6 @@ test('prepareUploadFile rejects oversized non-image files without compression', 
 
   await assert.rejects(
     prepareUploadFile(source),
-    /File deck\.pdf is 3 MB\. Please use a file under 3 MB\./,
+    /File deck\.pdf is 100 MB\. Please use a file under 100 MB\./,
   );
 });

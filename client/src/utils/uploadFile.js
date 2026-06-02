@@ -1,4 +1,4 @@
-export const MAX_UPLOAD_BYTES = 3 * 1024 * 1024;
+export const MAX_UPLOAD_BYTES = 100 * 1024 * 1024; // 100 MB
 export const IMAGE_COMPRESS_THRESHOLD_BYTES = 1024 * 1024;
 
 const RASTER_IMAGE_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp']);

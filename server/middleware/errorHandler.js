@@ -1,3 +1,5 @@
+const config = require('../config/config');
+
 const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
   let message = err.message || 'Lỗi hệ thống';
@@ -25,7 +27,8 @@ const errorHandler = (err, req, res, next) => {
   // Multer file size error
   if (err.code === 'LIMIT_FILE_SIZE') {
     statusCode = 400;
-    message = 'File quá lớn (tối đa 5MB)';
+    const maxMb = Math.round(config.maxFileSize / (1024 * 1024));
+    message = `File quá lớn (tối đa ${maxMb}MB)`;
   }
 
   console.error(`[ERROR] ${statusCode} - ${message}`);
