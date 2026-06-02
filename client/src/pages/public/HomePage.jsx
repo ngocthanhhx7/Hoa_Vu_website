@@ -130,7 +130,7 @@ function HomePage() {
           <Row className="mt-4">
             {introCards.map((card, index) => (
               <Col key={card.title} lg={3} md={6} className="mb-4">
-                <div className="intro-card fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className="intro-card h-100 fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                   <div className="intro-card-icon">{card.icon}</div>
                   <h3>{card.title}</h3>
                   <p>{card.desc}</p>
@@ -149,7 +149,7 @@ function HomePage() {
             <Row className="mt-4">
               {services.map((service) => (
                 <Col key={service._id} lg={4} md={6} className="mb-4">
-                  <Link to={`/dich-vu/${service.slug}`} style={{ textDecoration: 'none' }}>
+                  <Link to={`/dich-vu/${service.slug}`} className="d-block h-100" style={{ textDecoration: 'none' }}>
                     <div className="service-card">
                       <div className="service-card-icon">&#127912;</div>
                       <h3>{service.title}</h3>
