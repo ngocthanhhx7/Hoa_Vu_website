@@ -26,24 +26,32 @@ function AdminLayout() {
   ];
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div className="admin-shell">
       <aside className="admin-sidebar">
-        <div className="text-center mb-4 px-3">
-          <Link to="/" style={{ textDecoration: 'none' }}>
-            <div style={{ width: 45, height: 45, background: 'var(--primary)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 22, margin: '0 auto 8px' }}>H</div>
-            <div style={{ color: '#fff', fontWeight: 700, fontSize: 18 }}>HOA VU CMS</div>
+        <div className="admin-brand">
+          <Link to="/" className="admin-brand__link">
+            <div className="admin-brand__mark">H</div>
+            <div>
+              <div className="admin-brand__name">HOA VU CMS</div>
+              <div className="admin-brand__meta">Admin workspace</div>
+            </div>
           </Link>
         </div>
         <Nav className="flex-column">
           {menuItems.map((item) => (
             <Nav.Link key={item.to} as={NavLink} to={item.to} end={item.to === '/admin/dashboard'}>
-              {item.icon} {item.label}
+              <span className="admin-nav-icon">{item.icon}</span>
+              <span>{item.label}</span>
             </Nav.Link>
           ))}
         </Nav>
-        <div style={{ position: 'absolute', bottom: 20, left: 0, right: 0, padding: '0 24px' }}>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>User: {user.name || 'Admin'}</div>
-          <button onClick={handleLogout} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, width: '100%', display: 'flex', alignItems: 'center', gap: 8 }}><FiLogOut /> Đăng xuất</button>
+        <div className="admin-user-panel">
+          <div className="admin-user-panel__avatar">{(user.name || 'Admin').charAt(0).toUpperCase()}</div>
+          <div className="admin-user-panel__body">
+            <div className="admin-user-panel__label">Đang đăng nhập</div>
+            <div className="admin-user-panel__name">{user.name || 'Admin'}</div>
+          </div>
+          <button className="admin-logout" onClick={handleLogout} title="Đăng xuất"><FiLogOut /></button>
         </div>
       </aside>
       <main className="admin-content"><Outlet /></main>

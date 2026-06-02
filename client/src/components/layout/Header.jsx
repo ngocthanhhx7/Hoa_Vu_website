@@ -1,25 +1,10 @@
-﻿import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link, NavLink } from 'react-router-dom';
-import { FiExternalLink, FiMessageCircle } from 'react-icons/fi';
 import { BRAND } from '../../config/brand';
 
 function Header() {
   return (
     <header className="site-header">
-      <div className="topbar d-none d-md-block" style={{ background: 'linear-gradient(90deg, var(--primary-dark), #082b78)', color: '#fff', padding: '8px 0', fontSize: 13 }}>
-        <Container className="d-flex justify-content-between">
-          <div className="d-flex gap-4">
-            <a href={BRAND.contact.facebook} target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-2 text-white">
-              <FiExternalLink /> {BRAND.contact.primaryText}
-            </a>
-            <a href={BRAND.contact.messenger} target="_blank" rel="noreferrer" className="d-inline-flex align-items-center gap-2 text-white">
-              <FiMessageCircle /> Messenger
-            </a>
-          </div>
-          <div>{BRAND.description}</div>
-        </Container>
-      </div>
-
       <Navbar expand="lg" style={{ background: 'rgba(255,255,255,0.96)', boxShadow: 'var(--shadow-sm)', padding: '12px 0' }}>
         <Container>
           <Navbar.Brand as={Link} to="/" className="d-flex align-items-center flex-shrink-0">

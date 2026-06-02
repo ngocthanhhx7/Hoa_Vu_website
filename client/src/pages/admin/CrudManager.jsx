@@ -150,14 +150,17 @@ function CrudManager({
   }
 
   return (
-    <div>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2 style={{ fontWeight: 800 }}>{title}</h2>
-        {!hideCreate ? <Button variant="danger" onClick={openCreate}><FiPlus /> Thêm mới</Button> : null}
+    <div className="admin-page">
+      <div className="admin-page-header">
+        <div>
+          <div className="admin-eyebrow">Quản trị nội dung</div>
+          <h2>{title}</h2>
+        </div>
+        {!hideCreate ? <Button className="admin-primary-btn" onClick={openCreate}><FiPlus /> Thêm mới</Button> : null}
       </div>
       {alert ? <Alert variant={alert.type} dismissible onClose={() => setAlert(null)}>{alert.msg}</Alert> : null}
       <div className="admin-card">
-        <Table responsive hover>
+        <Table responsive hover className="admin-table">
           <thead>
             <tr>
               {columns.map((column) => <th key={column.key}>{column.label}</th>)}
@@ -169,8 +172,10 @@ function CrudManager({
               <tr key={item._id}>
                 {columns.map((column) => <td key={column.key}>{column.render ? column.render(item) : String(getValueByPath(item, column.key) ?? '')}</td>)}
                 <td>
-                  <Button size="sm" variant="outline-primary" className="me-1" onClick={() => openEdit(item)}><FiEdit /></Button>
-                  <Button size="sm" variant="outline-danger" onClick={() => handleDelete(item._id)}><FiTrash2 /></Button>
+                  <div className="admin-actions">
+                    <Button size="sm" variant="outline-primary" onClick={() => openEdit(item)}><FiEdit /></Button>
+                    <Button size="sm" variant="outline-danger" onClick={() => handleDelete(item._id)}><FiTrash2 /></Button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -179,7 +184,7 @@ function CrudManager({
         </Table>
       </div>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} size={modalSize}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} size={modalSize} className="admin-modal">
         <Modal.Header closeButton><Modal.Title>{editing ? 'Chỉnh sửa' : 'Thêm mới'}</Modal.Title></Modal.Header>
         <Modal.Body>
           <Row>
@@ -222,8 +227,8 @@ function CrudManager({
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>Hủy</Button>
-          <Button variant="danger" onClick={handleSave}>{editing ? 'Cập nhật' : 'Tạo mới'}</Button>
+          <Button variant="light" onClick={() => setShowModal(false)}>Hủy</Button>
+          <Button className="admin-primary-btn" onClick={handleSave}>{editing ? 'Cập nhật' : 'Tạo mới'}</Button>
         </Modal.Footer>
       </Modal>
     </div>

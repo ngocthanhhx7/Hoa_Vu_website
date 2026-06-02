@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
-import { FiArrowRight, FiAward, FiEye, FiHeart, FiTarget } from 'react-icons/fi';
+import { FiArrowRight, FiAward, FiEye, FiHeart, FiMessageCircle, FiTarget } from 'react-icons/fi';
 import HeroBanner from '../../components/common/HeroBanner';
 import ProjectGrid from '../../components/common/ProjectGrid';
 import SEO from '../../components/common/SEO';
@@ -139,21 +139,31 @@ function HomePage() {
       <section className="section section--primary">
         <Container>
           <h2 className="section-title">Dịch vụ</h2>
-          <Row className="mt-4">
-            {services.map((service) => (
-              <Col key={service._id} lg={4} md={6} className="mb-4">
-                <Link to={`/dich-vu/${service.slug}`} style={{ textDecoration: 'none' }}>
-                  <div className="service-card">
-                    <div className="service-card-icon">&#127912;</div>
-                    <h3>{service.title}</h3>
-                    <ul>
-                      {service.features?.slice(0, 5).map((feature) => <li key={feature}>{feature}</li>)}
-                    </ul>
-                  </div>
-                </Link>
-              </Col>
-            ))}
-          </Row>
+          {services.length > 0 ? (
+            <Row className="mt-4">
+              {services.map((service) => (
+                <Col key={service._id} lg={4} md={6} className="mb-4">
+                  <Link to={`/dich-vu/${service.slug}`} style={{ textDecoration: 'none' }}>
+                    <div className="service-card">
+                      <div className="service-card-icon">&#127912;</div>
+                      <h3>{service.title}</h3>
+                      <ul>
+                        {service.features?.slice(0, 5).map((feature) => <li key={feature}>{feature}</li>)}
+                      </ul>
+                    </div>
+                  </Link>
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <div className="home-empty-state home-empty-state--primary">
+              <h3>Đang cập nhật dịch vụ</h3>
+              <p>Các gói thiết kế sẽ được hiển thị sau khi dữ liệu được đồng bộ. Bạn vẫn có thể liên hệ để được tư vấn nhanh.</p>
+              <Link to="/lien-he" className="btn-hoavu btn-hoavu--white">
+                Tư vấn dịch vụ <FiMessageCircle />
+              </Link>
+            </div>
+          )}
         </Container>
       </section>
 

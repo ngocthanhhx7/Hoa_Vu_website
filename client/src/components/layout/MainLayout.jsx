@@ -1,6 +1,5 @@
-﻿import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import ChatbotWidget from '../common/ChatbotWidget';
-import FloatingCTA from './FloatingCTA';
 import Footer from './Footer';
 import Header from './Header';
 
@@ -12,7 +11,6 @@ function MainLayout() {
         <Outlet />
       </main>
       <Footer />
-      <FloatingCTA />
       <ChatbotWidget />
     </div>
   );

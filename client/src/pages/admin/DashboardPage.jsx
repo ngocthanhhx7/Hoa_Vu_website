@@ -26,14 +26,19 @@ function DashboardPage() {
   ] : [];
 
   return (
-    <div>
-      <h2 style={{ fontWeight: 800, marginBottom: 24 }}>Dashboard</h2>
+    <div className="admin-page">
+      <div className="admin-page-header">
+        <div>
+          <div className="admin-eyebrow">Tổng quan hệ thống</div>
+          <h2>Dashboard</h2>
+        </div>
+      </div>
       {error ? <Alert variant="danger">{error}</Alert> : null}
       <Row>
         {cards.map((card) => (
           <Col key={card.label} lg md={4} sm={6} className="mb-3">
-            <div className="admin-stat-card" style={{ borderLeftColor: card.color }}>
-              <div style={{ fontSize: 28, color: card.color, marginBottom: 8 }}>{card.icon}</div>
+            <div className="admin-stat-card" style={{ '--stat-color': card.color }}>
+              <div className="admin-stat-icon">{card.icon}</div>
               <div className="number">{card.value}</div>
               <div className="label">{card.label}</div>
             </div>
@@ -43,8 +48,8 @@ function DashboardPage() {
 
       {data?.recentContacts?.length ? (
         <div className="admin-card mt-4">
-          <h5 style={{ fontWeight: 700, marginBottom: 16 }}>Liên hệ gần đây</h5>
-          <Table responsive hover size="sm">
+          <h5 className="admin-card-title">Liên hệ gần đây</h5>
+          <Table responsive hover size="sm" className="admin-table">
             <thead>
               <tr><th>Tên</th><th>SĐT</th><th>Dịch vụ</th><th>Trạng thái</th><th>Ngày</th></tr>
             </thead>

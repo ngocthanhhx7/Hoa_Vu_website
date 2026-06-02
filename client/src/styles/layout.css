@@ -176,4 +176,14 @@
   .hero-visual-grid {
     grid-template-columns: 1fr;
   }
+
+  .floating-cta {
+    display: none;
+  }
+
+  .chatbot-widget {
+    left: auto;
+    right: 14px;
+    bottom: 14px;
+  }
 }
