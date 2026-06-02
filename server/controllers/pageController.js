@@ -152,11 +152,55 @@ exports.updateBanners = async (req, res, next) => {
     const bannerImages = sanitizeBannerImages(req.body.bannerImages || []);
 
     let settings = await SiteSettings.findOne();
+    let existingUrls = [];
+    if (settings) {
+      existingUrls = (settings.bannerImages || []).map((b) => b.url).filter(Boolean);
+    }
+
     if (!settings) {
       settings = await SiteSettings.create({ bannerImages });
     } else {
       settings.bannerImages = bannerImages;
       await settings.save();
+    }
+
+    // Clean up deleted banner images from storage
+    const newUrls = bannerImages.map((b) => b.url).filter(Boolean);
+    const deletedUrls = existingUrls.filter((url) => !newUrls.includes(url));
+
+    if (deletedUrls.length > 0) {
+      for (const url of deletedUrls) {
+        const media = await Media.findOne({ url });
+        if (media) {
+          try {
+            await deleteFile(media);
+            await Media.findByIdAndDelete(media._id);
+            console.log(`[STORAGE] Deleted banner media from DB & storage: ${url}`);
+          } catch (err) {
+            console.error(`Lỗi khi xóa file media: ${url}`, err);
+          }
+        } else {
+          // Check if it's an S3 URL from our bucket
+          const bucketHost = `${config.aws.bucket}.s3.${config.aws.region}.amazonaws.com`;
+          if (url.includes(bucketHost)) {
+            const parts = url.split(bucketHost + '/');
+            if (parts.length > 1) {
+              const storageKey = parts[1];
+              try {
+                await deleteFile({
+                  storageProvider: 's3',
+                  storageKey,
+                  bucket: config.aws.bucket,
+                  url
+                });
+                console.log(`[STORAGE] Deleted unindexed banner file from S3: ${storageKey}`);
+              } catch (err) {
+                console.error(`Lỗi khi xóa file S3 chưa lập chỉ mục: ${storageKey}`, err);
+              }
+            }
+          }
+        }
+      }
     }
 
     res.json({ success: true, data: bannerImages });
