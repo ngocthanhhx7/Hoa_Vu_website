@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
-import { FiArrowRight, FiAward, FiEye, FiHeart, FiMessageCircle, FiTarget } from 'react-icons/fi';
+import { FiArrowRight, FiAward, FiCheckCircle, FiEye, FiHeart, FiMessageCircle, FiTarget } from 'react-icons/fi';
 import HeroBanner from '../../components/common/HeroBanner';
 import ProjectGrid from '../../components/common/ProjectGrid';
 import SEO from '../../components/common/SEO';
@@ -142,20 +142,34 @@ function HomePage() {
         </Container>
       </section>
 
-      <section className="section section--primary">
+      <section className="section section--primary home-services-section">
         <Container>
-          <h2 className="section-title">Dịch vụ</h2>
+          <div className="home-services-header">
+            <div>
+              <span className="section-eyebrow section-eyebrow--light">Branding solutions</span>
+              <h2 className="section-title">Dịch vụ</h2>
+            </div>
+            <p>
+              Các giải pháp thiết kế được xây dựng theo từng mục tiêu thương hiệu: từ logo, bộ nhận diện đến gian hàng và nền tảng số.
+            </p>
+          </div>
           {services.length > 0 ? (
-            <Row className="mt-4">
-              {services.map((service) => (
+            <Row className="home-services-grid g-4">
+              {services.map((service, index) => (
                 <Col key={service._id} lg={4} md={6} className="mb-4">
-                  <Link to={`/dich-vu/${service.slug}`} className="d-block h-100" style={{ textDecoration: 'none' }}>
+                  <Link to={`/dich-vu/${service.slug}`} className="service-card-link d-block h-100">
                     <div className="service-card">
-                      <div className="service-card-icon">&#127912;</div>
+                      <div className="service-card-top">
+                        <span className="service-card-index">0{index + 1}</span>
+                        <div className="service-card-icon">&#127912;</div>
+                      </div>
                       <h3>{service.title}</h3>
                       <ul>
-                        {service.features?.slice(0, 5).map((feature) => <li key={feature}>{feature}</li>)}
+                        {service.features?.slice(0, 5).map((feature) => (
+                          <li key={feature}><FiCheckCircle /> <span>{feature}</span></li>
+                        ))}
                       </ul>
+                      <span className="service-card-cta">Xem chi tiết <FiArrowRight /></span>
                     </div>
                   </Link>
                 </Col>
