@@ -274,6 +274,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ===== HEADER ===== */
+.site-header-logo {
+  width: clamp(96px, 11vw, 150px);
+  height: 52px;
+  padding: 0 !important;
+}
+
+.site-header-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+
 .hoavu-header {
   position: sticky;
   top: 0;
@@ -883,6 +896,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ===== FOOTER ===== */
+.site-footer-logo {
+  width: clamp(120px, 14vw, 180px);
+  height: 58px;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 20px;
+}
+
 .hoavu-footer {
   background: var(--primary);
   color: var(--secondary);

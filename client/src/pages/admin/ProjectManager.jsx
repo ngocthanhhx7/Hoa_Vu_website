@@ -4,6 +4,7 @@ import { FiImage, FiTrash2, FiUploadCloud } from 'react-icons/fi';
 import CrudManager from './CrudManager';
 import { adminAPI } from '../../services/api';
 import { normalizeMediaList, resolveMediaUrl } from '../../utils/media';
+import { createUploadFormData, getUploadErrorMessage } from '../../utils/uploadFile';
 
 function ProjectMediaField({ label, value, onChange, multiple = false, folder = 'projects', helpText }) {
   const [uploading, setUploading] = useState(false);
@@ -22,9 +23,7 @@ function ProjectMediaField({ label, value, onChange, multiple = false, folder = 
       const uploadedUrls = [];
 
       for (const file of selectedFiles) {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('alt', file.name);
+        const { formData } = await createUploadFormData(file, { alt: file.name });
         const res = await adminAPI.uploadMedia(formData, folder);
         const nextUrl = res.data?.data?.url;
         if (nextUrl) uploadedUrls.push(nextUrl);
@@ -37,7 +36,7 @@ function ProjectMediaField({ label, value, onChange, multiple = false, folder = 
       setFeedback({ type: 'success', msg: `Đã tải lên ${uploadedUrls.length} ảnh.` });
     } catch (err) {
       console.error('Lỗi upload ảnh:', err);
-      setFeedback({ type: 'danger', msg: err.response?.data?.message || err.message || 'Tải ảnh thất bại.' });
+      setFeedback({ type: 'danger', msg: getUploadErrorMessage(err, 'Tải ảnh thất bại.') });
     } finally {
       event.target.value = '';
       setUploading(false);

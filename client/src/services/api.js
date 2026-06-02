@@ -80,7 +80,6 @@ export const adminAPI = {
   updateSettings: (data) => api.put('/admin/settings', data),
   getMedia: (params) => api.get('/admin/media', { params }),
   uploadMedia: (formData, folder) => api.post(`/admin/media?folder=${folder || 'general'}`, formData, {
-    headers: { 'Content-Type': null },
     timeout: 60000,
   }),
   deleteMedia: (id) => api.delete(`/admin/media/${id}`),

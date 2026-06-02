@@ -13,11 +13,10 @@ function Header() {
     <header className="site-header">
       <Navbar expand="lg" style={{ background: 'rgba(255,255,255,0.96)', boxShadow: 'var(--shadow-sm)', padding: '12px 0' }}>
         <Container>
-          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center flex-shrink-0">
+          <Navbar.Brand as={Link} to="/" className="site-header-logo d-flex align-items-center flex-shrink-0">
             <img
               src={companyLogo}
               alt={companyName}
-              style={{ height: 45, width: 'auto', maxWidth: 200, objectFit: 'contain', display: 'block' }}
             />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="main-nav" />

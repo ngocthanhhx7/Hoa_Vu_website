@@ -33,16 +33,9 @@ function Footer() {
         <Row className="gy-4 align-items-start">
           <Col lg={4}>
             <img
+              className="site-footer-logo"
               src={companyLogo}
               alt={`${companyName} footer logo`}
-              style={{
-                height: 48,
-                width: 'auto',
-                maxWidth: 180,
-                objectFit: 'contain',
-                marginBottom: 20,
-                display: 'block'
-              }}
             />
             <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: 1.8, marginBottom: 24 }}>
               {description}

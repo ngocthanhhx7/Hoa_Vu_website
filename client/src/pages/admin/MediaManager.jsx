@@ -3,6 +3,7 @@ import { Alert, Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { FiCopy, FiCheck, FiTrash2, FiImage, FiFileText, FiUploadCloud } from 'react-icons/fi';
 import { adminAPI } from '../../services/api';
 import { resolveMediaUrl } from '../../utils/media';
+import { createUploadFormData, getUploadErrorMessage } from '../../utils/uploadFile';
 
 function MediaCard({ item, onDelete }) {
   const [copied, setCopied] = useState(false);
@@ -110,11 +111,9 @@ function MediaManager() {
     }
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('alt', alt);
 
     try {
+      const { formData } = await createUploadFormData(file, { alt });
       await adminAPI.uploadMedia(formData, folder);
       setAlert({ type: 'success', msg: 'Tải lên thành công.' });
       setFile(null);
@@ -123,7 +122,7 @@ function MediaManager() {
       load();
     } catch (err) {
       console.error('Lỗi upload media:', err);
-      setAlert({ type: 'danger', msg: err.response?.data?.message || err.message || 'Tải lên thất bại.' });
+      setAlert({ type: 'danger', msg: getUploadErrorMessage(err, 'Tải lên thất bại.') });
     } finally {
       setUploading(false);
     }

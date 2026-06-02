@@ -3,6 +3,7 @@ import { Alert, Button, Card, Col, Form, Row, Spinner } from 'react-bootstrap';
 import { FiArrowDown, FiArrowUp, FiImage, FiPlus, FiSave, FiTrash2, FiUploadCloud } from 'react-icons/fi';
 import { adminAPI } from '../../services/api';
 import { resolveMediaUrl } from '../../utils/media';
+import { createUploadFormData, getUploadErrorMessage } from '../../utils/uploadFile';
 
 function BannerManager() {
   const [banners, setBanners] = useState([]);
@@ -64,10 +65,8 @@ function BannerManager() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('file', file);
-
     try {
+      const { formData } = await createUploadFormData(file);
       const res = await adminAPI.uploadMedia(formData, 'banners');
       const uploadedUrl = res.data?.data?.url;
       if (uploadedUrl) {
@@ -76,7 +75,7 @@ function BannerManager() {
       }
     } catch (err) {
       console.error('Lỗi upload banner:', err);
-      setFeedback({ type: 'danger', msg: err.response?.data?.message || err.message || 'Tải banner lên thất bại.' });
+      setFeedback({ type: 'danger', msg: getUploadErrorMessage(err, 'Tải banner lên thất bại.') });
     } finally {
       event.target.value = '';
     }
