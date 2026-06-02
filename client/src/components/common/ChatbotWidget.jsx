@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { FiMessageSquare, FiX, FiSend } from 'react-icons/fi';
 import { useSettings } from '../../context/SettingsContext';
 import { publicAPI } from '../../services/api';
@@ -11,20 +11,19 @@ function ChatbotWidget() {
   const { settings } = useSettings();
   const chatbotConfig = settings?.chatbotConfig || {};
   const greeting = chatbotConfig.greeting || DEFAULT_GREETING;
-  const facebookUrl = settings?.socialLinks?.facebook || BRAND.contact.facebook;
+  const configuredQuickReplies = chatbotConfig.quickReplies;
+  const initialQuickReplies = useMemo(() => (
+    Array.isArray(configuredQuickReplies) && configuredQuickReplies.length > 0
+      ? configuredQuickReplies
+      : DEFAULT_QUICK_REPLIES
+  ), [configuredQuickReplies]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [quickReplies, setQuickReplies] = useState(DEFAULT_QUICK_REPLIES);
+  const [quickReplies, setQuickReplies] = useState(initialQuickReplies);
   const sessionId = useId();
   const messagesRef = useRef(null);
-
-  useEffect(() => {
-    if (Array.isArray(chatbotConfig.quickReplies) && chatbotConfig.quickReplies.length > 0) {
-      setQuickReplies(chatbotConfig.quickReplies);
-    }
-  }, [settings]);
 
   useEffect(() => {
     if (messagesRef.current) {

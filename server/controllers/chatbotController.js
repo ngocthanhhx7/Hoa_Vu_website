@@ -59,6 +59,12 @@ function getQuickReplies(settings) {
 function getFallbackResponse(intent, settings) {
   const greeting = settings?.chatbotConfig?.greeting || DEFAULT_GREETING;
 
+  const companyName = settings?.companyName || 'Hoa Vu';
+  const phones = Array.isArray(settings?.phones) && settings.phones.length > 0
+    ? settings.phones.map((item) => item.number).filter(Boolean).join(', ')
+    : '088 999 6399';
+  const email = settings?.email || 'info@hoavu.vn';
+
   if (intent === 'greeting') {
     return {
       message: greeting,
@@ -68,14 +74,35 @@ function getFallbackResponse(intent, settings) {
 
   if (intent === 'unknown') {
     return {
-      message: 'Cảm ơn bạn! Để được tư vấn chi tiết hơn, vui lòng liên hệ hotline 088 999 6399 hoặc chọn một trong các chủ đề bên dưới.',
+      message: `Cảm ơn bạn! Để được tư vấn chi tiết hơn, vui lòng liên hệ hotline ${phones} hoặc chọn một trong các chủ đề bên dưới.`,
       action: { type: 'link', url: '/lien-he', label: 'Liên hệ tư vấn' },
     };
   }
 
+  let response = '';
+  switch (intent) {
+    case 'pricing':
+      response = `Chi phí thiết kế logo tại ${companyName} dao động tùy theo gói dịch vụ và phạm vi công việc. Để nhận báo giá chi tiết, vui lòng liên hệ hotline ${phones} hoặc để lại thông tin, chúng tôi sẽ tư vấn ngay.`;
+      break;
+    case 'services':
+      response = `${companyName} cung cấp các dịch vụ chính như thiết kế logo, nhận diện thương hiệu, profile, brochure, banner, bao bì, website và các hạng mục truyền thông khác. Bạn đang quan tâm đến dịch vụ nào?`;
+      break;
+    case 'portfolio':
+      response = `${companyName} đã thực hiện nhiều dự án cho khách hàng trong và ngoài nước. Bạn có thể xem các dự án tiêu biểu của chúng tôi tại trang Dự án.`;
+      break;
+    case 'contact':
+      response = `Bạn có thể liên hệ ${companyName} qua hotline ${phones}, email ${email} hoặc để lại thông tin ở trang liên hệ để được gọi lại nhanh hơn.`;
+      break;
+    case 'process':
+      response = `Quy trình thiết kế tại ${companyName} thường gồm tiếp nhận thông tin, tư vấn, chốt phạm vi, triển khai dự án, bàn giao và hậu mãi. Thời gian hoàn thành trung bình khoảng 3-7 ngày làm việc tùy hạng mục.`;
+      break;
+    default:
+      response = `Cảm ơn bạn! Vui lòng liên hệ hotline ${phones} hoặc chọn một chủ đề bên dưới.`;
+  }
+
   return {
-    message: INTENTS[intent].response,
-    action: INTENTS[intent].action,
+    message: response,
+    action: INTENTS[intent]?.action || null,
   };
 }
 
