@@ -17,7 +17,7 @@ function Header() {
             <img
               src={companyLogo}
               alt={companyName}
-              style={{ height: 30, width: 'auto', maxWidth: 180, objectFit: 'contain', display: 'block' }}
+              style={{ height: 45, width: 'auto', maxWidth: 200, objectFit: 'contain', display: 'block' }}
             />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="main-nav" />
