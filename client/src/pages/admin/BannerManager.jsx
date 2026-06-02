@@ -69,8 +69,9 @@ function BannerManager() {
         updateBanner(index, 'url', uploadedUrl);
         setFeedback({ type: 'success', msg: 'Tải banner lên thành công.' });
       }
-    } catch {
-      setFeedback({ type: 'danger', msg: 'Tải banner lên thất bại.' });
+    } catch (err) {
+      console.error('Lỗi upload banner:', err);
+      setFeedback({ type: 'danger', msg: err.response?.data?.message || err.message || 'Tải banner lên thất bại.' });
     } finally {
       event.target.value = '';
     }

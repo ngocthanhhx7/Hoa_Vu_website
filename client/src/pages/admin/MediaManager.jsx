@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Button, Form, Table } from 'react-bootstrap';
 import { adminAPI } from '../../services/api';
 import { resolveMediaUrl } from '../../utils/media';
@@ -40,7 +40,8 @@ function MediaManager() {
       setAlt('');
       load();
     } catch (err) {
-      setAlert({ type: 'danger', msg: err.response?.data?.message || 'Tải lên thất bại.' });
+      console.error('Lỗi upload media:', err);
+      setAlert({ type: 'danger', msg: err.response?.data?.message || err.message || 'Tải lên thất bại.' });
     }
   }
 

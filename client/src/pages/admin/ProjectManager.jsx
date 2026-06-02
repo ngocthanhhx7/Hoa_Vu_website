@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
 import { FiImage, FiTrash2, FiUploadCloud } from 'react-icons/fi';
 import CrudManager from './CrudManager';
@@ -36,7 +36,8 @@ function ProjectMediaField({ label, value, onChange, multiple = false, folder = 
 
       setFeedback({ type: 'success', msg: `Đã tải lên ${uploadedUrls.length} ảnh.` });
     } catch (err) {
-      setFeedback({ type: 'danger', msg: err.response?.data?.message || 'Tải ảnh thất bại.' });
+      console.error('Lỗi upload ảnh:', err);
+      setFeedback({ type: 'danger', msg: err.response?.data?.message || err.message || 'Tải ảnh thất bại.' });
     } finally {
       event.target.value = '';
       setUploading(false);
