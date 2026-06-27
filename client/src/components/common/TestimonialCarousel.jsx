@@ -60,6 +60,7 @@ const TestimonialCarousel = () => {
           {pages.map((_, i) => (
             <button key={i}
               onClick={() => setActiveIndex(i)}
+              aria-label={`Xem nhóm đánh giá khách hàng ${i + 1}`}
               style={{
                 width: 12, height: 12, borderRadius: '50%', border: 'none', cursor: 'pointer',
                 background: i === activeIndex ? 'var(--primary)' : 'var(--gray-300)',

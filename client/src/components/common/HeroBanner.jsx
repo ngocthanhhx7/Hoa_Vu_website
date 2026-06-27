@@ -2,18 +2,18 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { resolveMediaUrl } from '../../utils/media';
 import { BRAND } from '../../config/brand';
+import { resolveMediaUrl } from '../../utils/media';
+import { buildBannerAlt } from '../../utils/seoContent';
 
 const HeroBanner = ({ title, description, ctaText, ctaLink, bgImage, variant = 'default', bannerImages = [] }) => {
-  /* ── Slideshow state (only for image-only banners) ── */
   const [currentSlide, setCurrentSlide] = useState(0);
   const timerRef = useRef(null);
   const images = bannerImages.filter(Boolean);
   const hasSlideshow = images.length > 0;
 
   useEffect(() => {
-    if (!hasSlideshow || images.length <= 1) return;
+    if (!hasSlideshow || images.length <= 1) return undefined;
     timerRef.current = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % images.length);
     }, 5000);
@@ -28,14 +28,13 @@ const HeroBanner = ({ title, description, ctaText, ctaLink, bgImage, variant = '
     }, 5000);
   }
 
-  /* ── Image-only banner (slideshow) ── */
   if (hasSlideshow) {
     return (
       <section className="hero-slideshow">
         <div className="hero-slideshow__track">
           {images.map((img, index) => {
             const src = typeof img === 'string' ? resolveMediaUrl(img) : resolveMediaUrl(img.url);
-            const alt = typeof img === 'string' ? 'Banner Hoa Vu' : (img.alt || 'Banner Hoa Vu');
+            const alt = typeof img === 'string' ? buildBannerAlt() : buildBannerAlt(img.alt);
 
             return (
               <div
@@ -91,7 +90,6 @@ const HeroBanner = ({ title, description, ctaText, ctaLink, bgImage, variant = '
     );
   }
 
-  /* ── Classic text banner (fallback) ── */
   const style = bgImage ? { backgroundImage: `url(${bgImage})` } : {};
 
   return (
@@ -101,7 +99,9 @@ const HeroBanner = ({ title, description, ctaText, ctaLink, bgImage, variant = '
           <h1>{title}</h1>
           {description && <p>{description}</p>}
           {ctaText && ctaLink && (
-            <Link to={ctaLink} className="btn-hoavu btn-hoavu--white">{ctaText}</Link>
+            <Link to={ctaLink} className="btn-hoavu btn-hoavu--white" aria-label={ctaText}>
+              {ctaText}
+            </Link>
           )}
         </div>
       </Container>

@@ -7,6 +7,7 @@ import Pagination from '../../components/common/Pagination';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 import { SITE_URL } from '../../utils/seo';
+import { buildCollectionPageSchema } from '../../utils/schema';
 
 function BlogByCategoryPage() {
   const { category } = useParams();
@@ -40,35 +41,31 @@ function BlogByCategoryPage() {
   }, [currentCategory, page]);
 
   const breadcrumbItems = [{ label: 'Blog', to: '/blog' }, { label: currentCategory?.name || category }];
+  const title = currentCategory ? `Blog ${currentCategory.name}` : 'Blog thiết kế thương hiệu';
+  const description = `Bài viết ${currentCategory?.name || 'về thiết kế thương hiệu'} từ HOAVU BRANDING.`;
+  const basePath = `/blog/${category}`;
+  const path = page > 1 ? `${basePath}?page=${page}` : basePath;
 
-  const blogCategoryJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    '@id': `${SITE_URL}/blog/${category}#collectionpage`,
-    name: currentCategory ? `Blog ${currentCategory.name}` : 'Blog thiết kế thương hiệu',
-    description: `Bài viết ${currentCategory?.name || 'về thiết kế thương hiệu'} từ HOAVU BRANDING.`,
-    url: `${SITE_URL}/blog/${category}`,
-    isPartOf: {
-      '@id': `${SITE_URL}/#website`,
-    },
-    mainEntity: {
-      '@type': 'ItemList',
-      numberOfItems: posts.length,
-      itemListElement: posts.map((post, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        url: `${SITE_URL}/blog/${post.category?.slug || category}/${post.slug}`,
-        name: post.title,
-      })),
-    },
-  };
+  const blogCategoryJsonLd = buildCollectionPageSchema({
+    siteUrl: SITE_URL,
+    path: basePath,
+    name: title,
+    description,
+    items: posts.map((post) => ({
+      url: `${SITE_URL}/blog/${post.category?.slug || category}/${post.slug}`,
+      name: post.title,
+      description: post.excerpt,
+    })),
+  });
 
   return (
     <>
       <SEO
-        title={currentCategory ? `Blog ${currentCategory.name}` : 'Blog thiết kế thương hiệu'}
-        description={`Bài viết ${currentCategory?.name || 'về thiết kế thương hiệu'} từ HOAVU BRANDING.`}
-        path={page > 1 ? `/blog/${category}?page=${page}` : `/blog/${category}`}
+        title={title}
+        description={description}
+        path={path}
+        prevPath={page > 2 ? `${basePath}?page=${page - 1}` : page === 2 ? basePath : undefined}
+        nextPath={page < pagination.pages ? `${basePath}?page=${page + 1}` : undefined}
         jsonLd={blogCategoryJsonLd}
         breadcrumbItems={breadcrumbItems}
       />

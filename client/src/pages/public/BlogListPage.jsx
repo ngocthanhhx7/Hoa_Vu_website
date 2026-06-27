@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { NavLink, useSearchParams } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
+import { NavLink, useSearchParams } from 'react-router-dom';
 import BlogCard from '../../components/common/BlogCard';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import Pagination from '../../components/common/Pagination';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 import { SITE_URL } from '../../utils/seo';
+import { buildCollectionPageSchema } from '../../utils/schema';
 
 function BlogListPage() {
   const [searchParams] = useSearchParams();
@@ -33,36 +34,30 @@ function BlogListPage() {
   }, [page]);
 
   const breadcrumbItems = [{ label: 'Blog' }];
+  const title = 'Blog thiết kế thương hiệu';
+  const description = 'Bài viết, ý tưởng và kinh nghiệm về thiết kế logo, nhận diện thương hiệu và xây dựng hình ảnh doanh nghiệp từ HOAVU BRANDING.';
+  const path = page > 1 ? `/blog?page=${page}` : '/blog';
 
-  const blogListJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    '@id': `${SITE_URL}/blog#collectionpage`,
-    name: 'Blog thiết kế thương hiệu',
-    description: 'Bài viết, ý tưởng và kinh nghiệm về thiết kế logo, nhận diện thương hiệu và xây dựng hình ảnh doanh nghiệp từ HOAVU BRANDING.',
-    url: `${SITE_URL}/blog`,
-    isPartOf: {
-      '@id': `${SITE_URL}/#website`,
-    },
-    mainEntity: {
-      '@type': 'ItemList',
-      name: 'Danh sách bài viết blog',
-      numberOfItems: posts.length,
-      itemListElement: posts.map((post, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        url: `${SITE_URL}/blog/${post.category?.slug || 'uncategorized'}/${post.slug}`,
-        name: post.title,
-      })),
-    },
-  };
+  const blogListJsonLd = buildCollectionPageSchema({
+    siteUrl: SITE_URL,
+    path: '/blog',
+    name: title,
+    description,
+    items: posts.map((post) => ({
+      url: `${SITE_URL}/blog/${post.category?.slug || 'uncategorized'}/${post.slug}`,
+      name: post.title,
+      description: post.excerpt,
+    })),
+  });
 
   return (
     <>
       <SEO
-        title="Blog thiết kế thương hiệu"
-        description="Bài viết, ý tưởng và kinh nghiệm về thiết kế logo, nhận diện thương hiệu và xây dựng hình ảnh doanh nghiệp từ HOAVU BRANDING."
-        path={page > 1 ? `/blog?page=${page}` : '/blog'}
+        title={title}
+        description={description}
+        path={path}
+        prevPath={page > 2 ? `/blog?page=${page - 1}` : page === 2 ? '/blog' : undefined}
+        nextPath={page < pagination.pages ? `/blog?page=${page + 1}` : undefined}
         keywords={['blog thiết kế logo', 'cẩm nang branding', 'ý tưởng nhận diện thương hiệu']}
         jsonLd={blogListJsonLd}
         breadcrumbItems={breadcrumbItems}

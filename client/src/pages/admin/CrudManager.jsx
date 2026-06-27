@@ -24,6 +24,18 @@ function setValueByPath(target, path, value) {
 }
 
 function serializeFieldValue(field, value) {
+  if (field.type === 'faqList') {
+    return String(value || '')
+      .split('\n')
+      .map((line) => {
+        const [question = '', ...answerParts] = line.split('|');
+        return {
+          question: question.trim(),
+          answer: answerParts.join('|').trim(),
+        };
+      })
+      .filter((item) => item.question && item.answer);
+  }
   if (field.type === 'checkbox') return Boolean(value);
   if (field.type === 'number') return value === '' ? undefined : Number(value);
   if (field.type === 'list') return String(value || '').split(/\n|,/).map((item) => item.trim()).filter(Boolean);
@@ -98,6 +110,12 @@ function CrudManager({
 
       if (field.type === 'list' && Array.isArray(rawValue)) {
         value = rawValue.join('\n');
+      }
+
+      if (field.type === 'faqList' && Array.isArray(rawValue)) {
+        value = rawValue
+          .map((item) => `${item.question || ''} | ${item.answer || ''}`.trim())
+          .join('\n');
       }
 
       if (field.type === 'select') {
@@ -202,12 +220,13 @@ function CrudManager({
                 <Col key={field.key} md={field.fullWidth || field.type === 'textarea' || field.type === 'list' ? 12 : 6} className="mb-3">
                   <Form.Group>
                     <Form.Label>{field.label}</Form.Label>
-                    {customField || (field.type === 'textarea' || field.type === 'list' ? (
+                    {customField || (field.type === 'textarea' || field.type === 'list' || field.type === 'faqList' ? (
                       <Form.Control
                         as="textarea"
-                        rows={field.rows || (field.type === 'list' ? 3 : 5)}
+                        rows={field.rows || (field.type === 'list' || field.type === 'faqList' ? 3 : 5)}
                         value={value}
                         onChange={(event) => handleChange(field, event.target.value)}
+                        placeholder={field.placeholder}
                       />
                     ) : field.type === 'select' ? (
                       <Form.Select value={value} onChange={(event) => handleChange(field, event.target.value)}>

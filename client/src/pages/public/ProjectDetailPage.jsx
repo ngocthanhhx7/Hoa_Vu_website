@@ -7,7 +7,9 @@ import ProjectGrid from '../../components/common/ProjectGrid';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 import { normalizeMediaList, resolveMediaUrl } from '../../utils/media';
-import { SITE_URL, absoluteUrl, buildCanonicalUrl, stripToText } from '../../utils/seo';
+import { SITE_URL, absoluteUrl, stripToText } from '../../utils/seo';
+import { buildProjectImageAlt, normalizeFaqs, summarizeForAi } from '../../utils/seoContent';
+import { buildCreativeWorkSchema, buildFaqSchema } from '../../utils/schema';
 
 function ProjectDetailPage() {
   const { category, slug } = useParams();
@@ -40,55 +42,50 @@ function ProjectDetailPage() {
   }
 
   const projectPath = `/du-an/${project.category?.slug || category}/${project.slug}`;
+  const canonicalPath = project.seo?.canonicalPath || projectPath;
   const seoDescription = project.seo?.description || project.description || stripToText(project.htmlContent);
-  const seoImage = resolveMediaUrl(project.thumbnail || visuals[0]);
+  const seoImage = resolveMediaUrl(project.seo?.ogImage || project.thumbnail || visuals[0]);
+  const projectImages = visuals.map((item) => absoluteUrl(resolveMediaUrl(item))).filter(Boolean);
+  const faqs = normalizeFaqs(project.seo?.faqs);
+  const aiSummary = summarizeForAi(project.seo?.aiSummary || project.description || project.htmlContent, 4);
+
   const breadcrumbItems = [
     { label: 'Dự án', to: '/du-an' },
     { label: project.category?.name || category, to: `/du-an/${project.category?.slug || category}` },
     { label: project.title },
   ];
 
-  const projectImages = visuals.map((item) => absoluteUrl(resolveMediaUrl(item))).filter(Boolean);
-
-  const projectJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CreativeWork',
-    '@id': `${SITE_URL}${projectPath}#creativework`,
-    name: project.title,
-    description: seoDescription,
-    url: buildCanonicalUrl(projectPath),
-    image: projectImages.length > 0 ? projectImages : (seoImage ? absoluteUrl(seoImage) : undefined),
-    dateCreated: project.createdAt,
-    dateModified: project.updatedAt || project.createdAt,
-    inLanguage: 'vi-VN',
-    creator: {
-      '@type': 'Organization',
-      '@id': `${SITE_URL}/#organization`,
-      name: 'HOAVU BRANDING',
-    },
-    genre: project.category?.name || 'Thiết kế thương hiệu',
-    keywords: (project.seo?.keywords || project.tags || []).join(', '),
-    about: project.client?.industry || project.category?.name || undefined,
-    ...(project.client?.name ? {
-      mentions: {
-        '@type': 'Organization',
-        name: project.client.name,
-        ...(project.client.industry ? { description: project.client.industry } : {}),
-      },
-    } : {}),
-  };
+  const projectJsonLd = [
+    buildCreativeWorkSchema({
+      siteUrl: SITE_URL,
+      path: canonicalPath,
+      title: project.title,
+      description: seoDescription,
+      images: projectImages.length ? projectImages : [seoImage].filter(Boolean),
+      category: project.category?.name,
+      clientName: project.client?.name,
+      industry: project.client?.industry,
+      keywords: project.seo?.keywords || project.tags,
+      dateCreated: project.createdAt,
+      dateModified: project.updatedAt || project.createdAt,
+    }),
+    buildFaqSchema(faqs, { visible: faqs.length > 0 }),
+  ].filter(Boolean);
 
   return (
     <>
       <SEO
         title={project.seo?.title || project.title}
         description={seoDescription}
-        path={projectPath}
+        path={canonicalPath}
         image={seoImage}
-        imageAlt={project.title}
+        imageAlt={project.seo?.imageAlt || project.thumbnailAlt || buildProjectImageAlt(project)}
         keywords={project.seo?.keywords || project.tags}
+        noindex={project.seo?.noindex}
         jsonLd={projectJsonLd}
         breadcrumbItems={breadcrumbItems}
+        datePublished={project.createdAt}
+        dateModified={project.updatedAt}
       />
       <HoaVuBreadcrumb items={breadcrumbItems} />
       <section className="section project-detail-page">
@@ -109,11 +106,12 @@ function ProjectDetailPage() {
                         <figure key={`${item}-${index}`} className="project-visual-frame">
                           <img
                             src={resolveMediaUrl(item)}
-                            alt={`${project.title} - visual ${index + 1}`}
+                            alt={project.imageAlts?.[index] || (index === 0 ? project.thumbnailAlt : '') || buildProjectImageAlt(project, index + 1)}
                             loading={index === 0 ? 'eager' : 'lazy'}
                             fetchPriority={index === 0 ? 'high' : 'auto'}
                             decoding="async"
                           />
+                          {project.imageCaptions?.[index] ? <figcaption>{project.imageCaptions[index]}</figcaption> : null}
                         </figure>
                       ))}
                     </div>
@@ -147,6 +145,12 @@ function ProjectDetailPage() {
                     </div>
 
                     <div className="project-detail-richtext rich-text">
+                      {aiSummary.length ? (
+                        <div className="mb-4">
+                          <h2>Tóm tắt dự án</h2>
+                          <ul>{aiSummary.map((item) => <li key={item}>{item}</li>)}</ul>
+                        </div>
+                      ) : null}
                       {safeHtml ? <div dangerouslySetInnerHTML={{ __html: safeHtml }} /> : null}
                       {!safeHtml && project.description ? <p>{project.description}</p> : null}
                     </div>
@@ -188,6 +192,20 @@ function ProjectDetailPage() {
                   </aside>
                 </Col>
               </Row>
+
+              {faqs.length ? (
+                <div className="project-detail-content-card mt-4">
+                  <h2>Câu hỏi thường gặp</h2>
+                  <div className="rich-text">
+                    {faqs.map((item) => (
+                      <div key={item.question} className="mb-3">
+                        <h3>{item.question}</h3>
+                        <p>{item.answer}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </Col>
           </Row>
         </Container>

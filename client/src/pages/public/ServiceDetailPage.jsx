@@ -10,6 +10,8 @@ import StatsCounter from '../../components/common/StatsCounter';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { publicAPI } from '../../services/api';
 import { SITE_URL, buildCanonicalUrl, stripToText } from '../../utils/seo';
+import { normalizeFaqs, summarizeForAi } from '../../utils/seoContent';
+import { buildFaqSchema, buildServiceSchema } from '../../utils/schema';
 
 function ServiceDetailPage() {
   const { slug } = useParams();
@@ -21,9 +23,7 @@ function ServiceDetailPage() {
       if (res.data.success) {
         setService(res.data.data);
         publicAPI.getProjects({ category: res.data.data.category?._id, limit: 8 }).then((projectRes) => {
-          if (projectRes.data.success) {
-            setProjects(projectRes.data.data);
-          }
+          if (projectRes.data.success) setProjects(projectRes.data.data);
         }).catch(() => {});
       }
     }).catch(() => {});
@@ -36,56 +36,22 @@ function ServiceDetailPage() {
   }
 
   const seoDescription = service.seo?.description || service.shortDescription || service.description || stripToText(service.htmlContent);
-  const servicePath = `/dich-vu/${service.slug}`;
+  const servicePath = service.seo?.canonicalPath || `/dich-vu/${service.slug}`;
   const breadcrumbItems = [{ label: 'Dịch vụ', to: '/dich-vu' }, { label: service.title }];
+  const faqs = normalizeFaqs(service.seo?.faqs);
+  const aiSummary = summarizeForAi(service.seo?.aiSummary || service.shortDescription || service.description || service.htmlContent, 4);
 
   const serviceJsonLd = [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Service',
-      '@id': `${SITE_URL}${servicePath}#service`,
+    buildServiceSchema({
+      siteUrl: SITE_URL,
+      path: servicePath,
       name: service.title,
       description: seoDescription,
-      url: buildCanonicalUrl(servicePath),
-      image: service.heroImage ? buildCanonicalUrl(service.heroImage) : undefined,
-      provider: {
-        '@type': 'Organization',
-        '@id': `${SITE_URL}/#organization`,
-        name: 'HOAVU BRANDING',
-        url: buildCanonicalUrl('/'),
-      },
-      areaServed: {
-        '@type': 'Country',
-        name: 'Vietnam',
-      },
-      serviceType: service.title,
-      hasOfferCatalog: service.features?.length ? {
-        '@type': 'OfferCatalog',
-        name: `Tính năng ${service.title}`,
-        itemListElement: service.features.map((feature, index) => ({
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: feature,
-          },
-          position: index + 1,
-        })),
-      } : undefined,
-    },
-    // FAQ-like structured data from features if available
-    ...(service.features?.length > 0 ? [{
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: service.features.slice(0, 5).map((feature) => ({
-        '@type': 'Question',
-        name: `${service.title} bao gồm ${feature}?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `Có, dịch vụ ${service.title} của HOAVU BRANDING bao gồm ${feature}. Liên hệ để nhận tư vấn chi tiết.`,
-        },
-      })),
-    }] : []),
-  ];
+      image: service.seo?.ogImage || service.heroImage ? buildCanonicalUrl(service.seo?.ogImage || service.heroImage) : undefined,
+      features: service.features || [],
+    }),
+    buildFaqSchema(faqs, { visible: faqs.length > 0 }),
+  ].filter(Boolean);
 
   return (
     <>
@@ -93,27 +59,62 @@ function ServiceDetailPage() {
         title={service.seo?.title || service.title}
         description={seoDescription}
         path={servicePath}
-        image={service.heroImage}
+        image={service.seo?.ogImage || service.heroImage}
+        imageAlt={service.seo?.imageAlt || service.heroImageAlt || service.title}
         keywords={service.seo?.keywords}
+        noindex={service.seo?.noindex}
         jsonLd={serviceJsonLd}
         breadcrumbItems={breadcrumbItems}
+        datePublished={service.createdAt}
+        dateModified={service.updatedAt}
       />
       <HoaVuBreadcrumb items={breadcrumbItems} />
       <HeroBanner title={service.title} description={service.description} ctaText="Liên hệ tư vấn" ctaLink="/lien-he" />
       <StatsCounter />
 
-      {(service.features?.length || safeHtml) && (
+      {(service.features?.length || safeHtml || aiSummary.length || service.offerText) && (
         <section className="section">
           <Container>
+            {aiSummary.length ? (
+              <div className="rich-text mb-4">
+                <h2>Dịch vụ này phù hợp khi nào?</h2>
+                <ul>{aiSummary.map((item) => <li key={item}>{item}</li>)}</ul>
+              </div>
+            ) : null}
             {service.features?.length ? (
-              <ul style={{ color: 'var(--gray-700)', lineHeight: 1.8 }}>
-                {service.features.map((feature) => <li key={feature}>{feature}</li>)}
-              </ul>
+              <>
+                <h2 className="section-title">Dịch vụ này bao gồm gì?</h2>
+                <ul style={{ color: 'var(--gray-700)', lineHeight: 1.8 }}>
+                  {service.features.map((feature) => <li key={feature}>{feature}</li>)}
+                </ul>
+              </>
+            ) : null}
+            {service.offerText ? (
+              <div className="rich-text mb-4">
+                <h2>Kết quả bàn giao</h2>
+                <p>{service.offerText}</p>
+              </div>
             ) : null}
             {safeHtml ? <div dangerouslySetInnerHTML={{ __html: safeHtml }} style={{ lineHeight: 1.9, color: 'var(--gray-700)' }} /> : null}
           </Container>
         </section>
       )}
+
+      {faqs.length ? (
+        <section className="section section--gray">
+          <Container>
+            <h2 className="section-title">Câu hỏi thường gặp</h2>
+            <div className="rich-text mt-4">
+              {faqs.map((item) => (
+                <div key={item.question} className="mb-3">
+                  <h3>{item.question}</h3>
+                  <p>{item.answer}</p>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </section>
+      ) : null}
 
       {projects.length > 0 && (
         <section className="section">
@@ -122,7 +123,9 @@ function ServiceDetailPage() {
             <p className="mb-4" style={{ color: 'var(--gray-600)' }}>Một số dự án liên quan đến nhóm dịch vụ này.</p>
             <ProjectGrid projects={projects} />
             <div className="text-center mt-3">
-              <Link to={`/du-an/${service.category?.slug || 'thiet-ke-logo'}`} className="btn-hoavu btn-hoavu--primary">Xem thêm</Link>
+              <Link to={`/du-an/${service.category?.slug || 'thiet-ke-logo'}`} className="btn-hoavu btn-hoavu--primary" aria-label={`Xem thêm dự án ${service.title}`}>
+                Xem thêm
+              </Link>
             </div>
           </Container>
         </section>

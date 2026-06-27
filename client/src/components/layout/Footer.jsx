@@ -4,6 +4,7 @@ import { FiExternalLink, FiMapPin, FiMessageCircle, FiYoutube, FiInstagram } fro
 import { BRAND } from '../../config/brand';
 import { useSettings } from '../../context/useSettings';
 import { resolveMediaUrl } from '../../utils/media';
+import { buildFooterLogoAlt } from '../../utils/seoContent';
 
 function Footer() {
   const { settings } = useSettings();
@@ -36,29 +37,29 @@ function Footer() {
             <img
               className="site-footer-logo"
               src={companyLogo}
-              alt={`${companyName} footer logo`}
+              alt={settings?.logoAlt || buildFooterLogoAlt(companyName)}
             />
             <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: 1.8, marginBottom: 24 }}>
               {description}
             </p>
             <div className="social-row d-flex flex-wrap gap-2">
               {facebookUrl && (
-                <a href={facebookUrl} target="_blank" rel="noreferrer" aria-label="Facebook">
+                <a href={facebookUrl} target="_blank" rel="noreferrer" aria-label="Mở Facebook Fanpage HOAVU BRANDING">
                   <FiExternalLink />
                 </a>
               )}
               {messengerUrl && (
-                <a href={messengerUrl} target="_blank" rel="noreferrer" aria-label="Messenger">
+                <a href={messengerUrl} target="_blank" rel="noreferrer" aria-label="Nhắn tin Messenger với HOAVU BRANDING">
                   <FiMessageCircle />
                 </a>
               )}
               {instagramUrl && (
-                <a href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram">
+                <a href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Mở Instagram HOAVU BRANDING">
                   <FiInstagram />
                 </a>
               )}
               {youtubeUrl && (
-                <a href={youtubeUrl} target="_blank" rel="noreferrer" aria-label="Youtube">
+                <a href={youtubeUrl} target="_blank" rel="noreferrer" aria-label="Mở kênh Youtube HOAVU BRANDING">
                   <FiYoutube />
                 </a>
               )}

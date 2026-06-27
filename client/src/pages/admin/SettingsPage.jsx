@@ -30,6 +30,7 @@ function SettingsPage() {
         companyName: data.companyName || '',
         tagline: data.tagline || '',
         logo: data.logo || '',
+        logoAlt: data.logoAlt || '',
         favicon: data.favicon || '',
         address: data.address || '',
         email: data.email || '',
@@ -58,6 +59,18 @@ function SettingsPage() {
         },
         footerText: data.footerText || '',
         copyright: data.copyright || '',
+        seo: {
+          title: data.seo?.title || '',
+          description: data.seo?.description || '',
+          keywords: data.seo?.keywords || [],
+          canonicalPath: data.seo?.canonicalPath || '',
+          ogImage: data.seo?.ogImage || '',
+          imageAlt: data.seo?.imageAlt || '',
+          noindex: data.seo?.noindex || false,
+          aiSummary: data.seo?.aiSummary || '',
+          primaryKeyword: data.seo?.primaryKeyword || '',
+          secondaryKeywords: data.seo?.secondaryKeywords || [],
+        },
         chatbotConfig: data.chatbotConfig || { greeting: '', quickReplies: [], enabled: true },
       });
     }).catch((err) => {
@@ -115,6 +128,10 @@ function SettingsPage() {
       if (typeof qReplies === 'string') {
         qReplies = qReplies.split(/\n|,/).map((item) => item.trim()).filter(Boolean);
       }
+      let secondaryKeywords = form.seo.secondaryKeywords;
+      if (typeof secondaryKeywords === 'string') {
+        secondaryKeywords = secondaryKeywords.split(/\n|,/).map((item) => item.trim()).filter(Boolean);
+      }
       const payload = {
         ...form,
         theme: {
@@ -125,6 +142,10 @@ function SettingsPage() {
         chatbotConfig: {
           ...form.chatbotConfig,
           quickReplies: qReplies,
+        },
+        seo: {
+          ...form.seo,
+          secondaryKeywords,
         },
       };
       await adminAPI.updateSettings(payload);
@@ -189,6 +210,13 @@ function SettingsPage() {
                       <Form.Group>
                         <Form.Label className="fw-bold">Tagline (Slogan)</Form.Label>
                         <Form.Control value={form.tagline} onChange={(e) => setNested('tagline', e.target.value)} />
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={12}>
+                      <Form.Group>
+                        <Form.Label className="fw-bold">Alt logo mặc định</Form.Label>
+                        <Form.Control value={form.logoAlt || ''} onChange={(e) => setNested('logoAlt', e.target.value)} placeholder="Logo HOAVU BRANDING - dịch vụ thiết kế logo và nhận diện thương hiệu" />
                       </Form.Group>
                     </Col>
 
@@ -425,6 +453,62 @@ function SettingsPage() {
                         <Form.Label className="fw-bold">Hỗ trợ (Support)</Form.Label>
                         <Form.Control value={form.stats.support || ''} onChange={(e) => setNested('stats.support', e.target.value)} />
                       </Form.Group>
+                    </Col>
+                  </Row>
+                </Tab>
+
+                <Tab eventKey="seo" title={<span><FiGlobe className="me-2" />SEO</span>}>
+                  <Row className="g-3">
+                    <Col md={12}>
+                      <Form.Group>
+                        <Form.Label className="fw-bold">SEO title mặc định</Form.Label>
+                        <Form.Control value={form.seo.title || ''} onChange={(e) => setNested('seo.title', e.target.value)} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={12}>
+                      <Form.Group>
+                        <Form.Label className="fw-bold">SEO description mặc định</Form.Label>
+                        <Form.Control as="textarea" rows={3} value={form.seo.description || ''} onChange={(e) => setNested('seo.description', e.target.value)} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label className="fw-bold">Từ khóa chính</Form.Label>
+                        <Form.Control value={form.seo.primaryKeyword || ''} onChange={(e) => setNested('seo.primaryKeyword', e.target.value)} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label className="fw-bold">Canonical path</Form.Label>
+                        <Form.Control value={form.seo.canonicalPath || ''} onChange={(e) => setNested('seo.canonicalPath', e.target.value)} placeholder="/" />
+                      </Form.Group>
+                    </Col>
+                    <Col md={12}>
+                      <Form.Group>
+                        <Form.Label className="fw-bold">Từ khóa phụ (mỗi dòng một từ khóa)</Form.Label>
+                        <Form.Control as="textarea" rows={3} value={Array.isArray(form.seo.secondaryKeywords) ? form.seo.secondaryKeywords.join('\n') : form.seo.secondaryKeywords || ''} onChange={(e) => setNested('seo.secondaryKeywords', e.target.value)} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={12}>
+                      <Form.Group>
+                        <Form.Label className="fw-bold">OG image URL</Form.Label>
+                        <Form.Control value={form.seo.ogImage || ''} onChange={(e) => setNested('seo.ogImage', e.target.value)} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={12}>
+                      <Form.Group>
+                        <Form.Label className="fw-bold">Alt ảnh chia sẻ</Form.Label>
+                        <Form.Control value={form.seo.imageAlt || ''} onChange={(e) => setNested('seo.imageAlt', e.target.value)} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={12}>
+                      <Form.Group>
+                        <Form.Label className="fw-bold">AI summary mặc định</Form.Label>
+                        <Form.Control as="textarea" rows={3} value={form.seo.aiSummary || ''} onChange={(e) => setNested('seo.aiSummary', e.target.value)} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={12}>
+                      <Form.Check type="switch" id="site-noindex-switch" label="Không index mặc định" checked={Boolean(form.seo.noindex)} onChange={(e) => setNested('seo.noindex', e.target.checked)} />
                     </Col>
                   </Row>
                 </Tab>

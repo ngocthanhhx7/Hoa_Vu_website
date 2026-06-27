@@ -20,20 +20,54 @@ function buildUrl(path = '/') {
   return `${config.siteUrl}${normalizedPath}`;
 }
 
+function buildMediaUrl(value = '') {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  if (/^https?:\/\//i.test(raw)) return raw;
+  return buildUrl(raw.startsWith('/') ? raw : `/uploads/${raw}`);
+}
+
 function formatDate(value) {
   const date = value ? new Date(value) : new Date();
   return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
 }
 
-function buildUrlEntry({ path, lastmod, changefreq = 'weekly', priority = '0.7' }) {
+function buildImageEntry(image = {}) {
+  const loc = buildMediaUrl(image.loc || image.url);
+  if (!loc) return '';
+
+  return [
+    '    <image:image>',
+    `      <image:loc>${escapeXml(loc)}</image:loc>`,
+    image.title ? `      <image:title>${escapeXml(image.title)}</image:title>` : '',
+    image.caption ? `      <image:caption>${escapeXml(image.caption)}</image:caption>` : '',
+    '    </image:image>',
+  ].filter(Boolean).join('\n');
+}
+
+function buildUrlEntry({ path, lastmod, changefreq = 'weekly', priority = '0.7', images = [] }) {
+  const imageEntries = images.map(buildImageEntry).filter(Boolean);
   return [
     '  <url>',
     `    <loc>${escapeXml(buildUrl(path))}</loc>`,
     `    <lastmod>${formatDate(lastmod)}</lastmod>`,
     `    <changefreq>${changefreq}</changefreq>`,
     `    <priority>${priority}</priority>`,
+    ...imageEntries,
     '  </url>',
   ].join('\n');
+}
+
+function normalizeImageList(...groups) {
+  return groups
+    .flatMap((group) => Array.isArray(group) ? group : [group])
+    .map((item) => {
+      if (!item) return '';
+      if (typeof item === 'string') return item;
+      return item.url || item.loc || '';
+    })
+    .filter(Boolean)
+    .filter((item, index, collection) => collection.indexOf(item) === index);
 }
 
 exports.getRobots = (req, res) => {
@@ -57,11 +91,11 @@ exports.getSitemap = async (req, res, next) => {
       posts,
       pages,
     ] = await Promise.all([
-      Service.find({ isActive: true }).select('slug updatedAt').lean(),
+      Service.find({ isActive: true }).select('slug title heroImage heroImageAlt updatedAt').lean(),
       ServiceCategory.find({ isActive: true }).select('slug updatedAt').lean(),
-      Project.find({ isActive: true }).select('slug category updatedAt').populate('category', 'slug').lean(),
+      Project.find({ isActive: true }).select('slug title category thumbnail thumbnailAlt images updatedAt').populate('category', 'slug name').lean(),
       BlogCategory.find({ isActive: true }).select('slug updatedAt').lean(),
-      BlogPost.find({ isActive: true }).select('slug category updatedAt').populate('category', 'slug').lean(),
+      BlogPost.find({ isActive: true }).select('slug title category thumbnail thumbnailAlt updatedAt').populate('category', 'slug').lean(),
       Page.find({ isActive: true }).select('slug updatedAt').lean(),
     ]);
 
@@ -80,6 +114,11 @@ exports.getSitemap = async (req, res, next) => {
         lastmod: service.updatedAt,
         changefreq: 'monthly',
         priority: '0.8',
+        images: normalizeImageList(service.heroImage).map((url) => ({
+          url,
+          title: service.heroImageAlt || service.title,
+          caption: `Dịch vụ ${service.title} của HOAVU BRANDING`,
+        })),
       })),
       ...serviceCategories.map((category) => ({
         path: `/du-an/${category.slug}`,
@@ -94,6 +133,11 @@ exports.getSitemap = async (req, res, next) => {
           lastmod: project.updatedAt,
           changefreq: 'monthly',
           priority: '0.7',
+          images: normalizeImageList(project.thumbnail, project.images).map((url, index) => ({
+            url,
+            title: index === 0 ? (project.thumbnailAlt || project.title) : `${project.title} - ảnh ${index + 1}`,
+            caption: `Dự án ${project.title}${project.category?.name ? ` thuộc ${project.category.name}` : ''}`,
+          })),
         })),
       ...blogCategories.map((category) => ({
         path: `/blog/${category.slug}`,
@@ -108,6 +152,11 @@ exports.getSitemap = async (req, res, next) => {
           lastmod: post.updatedAt,
           changefreq: 'monthly',
           priority: '0.7',
+          images: normalizeImageList(post.thumbnail).map((url) => ({
+            url,
+            title: post.thumbnailAlt || post.title,
+            caption: `Ảnh minh họa bài viết ${post.title}`,
+          })),
         })),
       ...pages.map((page) => ({
         path: `/chinh-sach/${page.slug}`,
@@ -121,7 +170,7 @@ exports.getSitemap = async (req, res, next) => {
 
     res.type('application/xml').send([
       '<?xml version="1.0" encoding="UTF-8"?>',
-      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">',
       entries,
       '</urlset>',
     ].join('\n'));
