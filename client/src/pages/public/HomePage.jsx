@@ -7,17 +7,18 @@ import ProjectGrid from '../../components/common/ProjectGrid';
 import SEO from '../../components/common/SEO';
 import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { BRAND } from '../../config/brand';
-import { publicAPI } from '../../services/api';
-import { SITE_URL, absoluteUrl } from '../../utils/seo';
 import { useSettings } from '../../context/useSettings';
+import { publicAPI } from '../../services/api';
 import { resolveMediaUrl } from '../../utils/media';
+import { SITE_URL, absoluteUrl } from '../../utils/seo';
+import { buildServiceCtaLabel } from '../../utils/seoContent';
+import { buildProfessionalServiceSchema } from '../../utils/schema';
 
 function HomePage() {
   const { settings } = useSettings();
   const companyName = settings?.companyName || BRAND.name;
   const companyLogo = resolveMediaUrl(settings?.logo || BRAND.logoFull);
   const tagline = settings?.tagline || BRAND.description;
-  const facebookUrl = settings?.socialLinks?.facebook || BRAND.contact.facebook;
 
   const [projects, setProjects] = useState([]);
   const [services, setServices] = useState([]);
@@ -25,77 +26,55 @@ function HomePage() {
 
   useEffect(() => {
     publicAPI.getBanners().then((res) => {
-      if (res.data.success) {
-        setBannerImages(res.data.data);
-      }
+      if (res.data.success) setBannerImages(res.data.data);
     }).catch(() => {});
 
     publicAPI.getFeaturedProjects(8).then((res) => {
-      if (res.data.success) {
-        setProjects(res.data.data);
-      }
+      if (res.data.success) setProjects(res.data.data);
     }).catch(() => {});
 
     publicAPI.getServices().then((res) => {
-      if (res.data.success) {
-        setServices(res.data.data);
-      }
+      if (res.data.success) setServices(res.data.data);
     }).catch(() => {});
   }, []);
 
   const introCards = useMemo(() => ([
-    { icon: <FiHeart />, title: 'TEAM / ĐỘI NGŨ', desc: 'Hoavu là đơn vị thiết kế logo với tinh thần trẻ, đầy nhiệt huyết, linh hoạt và luôn tìm cách làm tốt hơn qua từng dự án. Không ngừng học hỏi, cập nhật và đổi mới để mỗi thiết kế không chỉ đẹp mà còn hiệu quả khi triển khai thực tế.' },
-    { icon: <FiEye />, title: 'VISION / TẦM NHÌN', desc: 'Trong 5 năm tới, Hoavu hướng đến việc đồng hành và hỗ trợ hơn 5000 khách hàng xây dựng hình ảnh thương hiệu rõ ràng, dễ nhận diện và triển khai thực tế hiệu quả.' },
-    { icon: <FiTarget />, title: 'MISSION / SỨ MỆNH', desc: 'Hoavu biến những ý tưởng khởi đầu trở thành nền tảng thương hiệu rõ ràng và có giá trị lâu dài, xây dựng nền tảng vững chắc để tiếp tục phát triển trong tương lai.' },
-    { icon: <FiAward />, title: 'CORE VALUE / GIÁ TRỊ CỐT LÕI', desc: '"Chuyên nghiệp - Sáng tạo - Tận tâm" Chuyên nghiệp trong công việc, sáng tạo trong thiết kế, tận tâm trong phục vụ khách hàng.' },
+    { icon: <FiHeart />, title: 'TEAM / ĐỘI NGŨ', desc: 'HOAVU là đơn vị thiết kế logo với tinh thần trẻ, linh hoạt và luôn tìm cách làm tốt hơn qua từng dự án. Đội ngũ ưu tiên giải pháp có thể triển khai thật, không chỉ đẹp trên bản trình bày.' },
+    { icon: <FiEye />, title: 'VISION / TẦM NHÌN', desc: 'HOAVU hướng đến việc đồng hành cùng doanh nghiệp xây dựng hình ảnh thương hiệu rõ ràng, dễ nhận diện và có khả năng mở rộng trên nhiều điểm chạm truyền thông.' },
+    { icon: <FiTarget />, title: 'MISSION / SỨ MỆNH', desc: 'HOAVU biến những ý tưởng khởi đầu thành nền tảng thương hiệu có cấu trúc, giúp doanh nghiệp tự tin triển khai logo, nhận diện và visual truyền thông nhất quán.' },
+    { icon: <FiAward />, title: 'CORE VALUE / GIÁ TRỊ CỐT LÕI', desc: 'Chuyên nghiệp trong quy trình, sáng tạo trong thiết kế và tận tâm trong phản hồi là ba nguyên tắc giúp HOAVU giữ chất lượng qua từng dự án.' },
   ]), []);
+
+  const aiSearchCards = useMemo(() => ([
+    {
+      title: 'HOAVU làm gì?',
+      desc: `${companyName} tư vấn và thiết kế logo, hệ thống nhận diện thương hiệu, visual truyền thông và các ấn phẩm giúp doanh nghiệp có hình ảnh rõ ràng, nhất quán và dễ ghi nhớ.`,
+    },
+    {
+      title: 'Phù hợp với ai?',
+      desc: 'Dịch vụ phù hợp với doanh nghiệp mới cần xây dựng thương hiệu từ đầu, thương hiệu đang tái định vị hoặc đội ngũ cần chuẩn hóa hình ảnh trước khi mở rộng truyền thông.',
+    },
+    {
+      title: 'Quy trình tư vấn nhanh',
+      desc: 'Khách hàng gửi brief, HOAVU làm rõ mục tiêu, đề xuất hướng thiết kế, triển khai concept và bàn giao bộ file ứng dụng theo phạm vi đã thống nhất.',
+    },
+  ]), [companyName]);
 
   const heroImages = bannerImages.length > 0 ? bannerImages : [BRAND.banner];
 
-  // LocalBusiness + ProfessionalService schema for homepage
   const homeJsonLd = [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'ProfessionalService',
-      '@id': `${SITE_URL}/#localbusiness`,
+    buildProfessionalServiceSchema({
+      siteUrl: SITE_URL,
       name: companyName,
-      alternateName: BRAND.shortName,
-      url: SITE_URL,
-      image: absoluteUrl(BRAND.defaultImage),
+      description: settings?.seo?.description || settings?.footerText || BRAND.seoDescription,
+      image: absoluteUrl(settings?.seo?.ogImage || BRAND.defaultImage),
       logo: absoluteUrl(companyLogo),
-      description: settings?.footerText || BRAND.seoDescription,
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Hồ Chí Minh',
-        addressCountry: 'VN',
-      },
-      areaServed: {
-        '@type': 'Country',
-        name: 'Vietnam',
-      },
-      priceRange: '$$',
-      openingHoursSpecification: {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        opens: '08:00',
-        closes: '18:00',
-      },
-      sameAs: [facebookUrl].filter(Boolean),
-      hasOfferCatalog: {
-        '@type': 'OfferCatalog',
-        name: 'Dịch vụ thiết kế thương hiệu',
-        itemListElement: services.map((service, index) => ({
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: service.title,
-            description: service.shortDescription || service.description || '',
-            url: `${SITE_URL}/dich-vu/${service.slug}`,
-          },
-          position: index + 1,
-        })),
-      },
-    },
+      offers: services.map((service) => ({
+        name: service.title,
+        description: service.shortDescription || service.description || '',
+        url: `${SITE_URL}/dich-vu/${service.slug}`,
+      })),
+    }),
     {
       '@context': 'https://schema.org',
       '@type': 'ItemList',
@@ -114,16 +93,34 @@ function HomePage() {
   return (
     <>
       <SEO
-        title="Thiết kế logo và nhận diện thương hiệu"
-        description={settings?.footerText || BRAND.seoDescription}
-        path="/"
-        image={BRAND.banner}
-        keywords={['thiết kế logo', 'nhận diện thương hiệu', 'thiết kế branding', companyName]}
+        title={settings?.seo?.title || 'Thiết kế logo và nhận diện thương hiệu'}
+        description={settings?.seo?.description || settings?.footerText || BRAND.seoDescription}
+        path={settings?.seo?.canonicalPath || '/'}
+        image={settings?.seo?.ogImage || BRAND.banner}
+        imageAlt={settings?.seo?.imageAlt || 'Banner dịch vụ thiết kế logo và nhận diện thương hiệu HOAVU'}
+        noindex={settings?.seo?.noindex}
+        keywords={settings?.seo?.keywords?.length ? settings.seo.keywords : ['thiết kế logo', 'nhận diện thương hiệu', 'thiết kế branding', companyName]}
         jsonLd={homeJsonLd}
       />
       <h1 className="visually-hidden">{companyName} - {tagline}</h1>
 
       <HeroBanner bannerImages={heroImages} />
+
+      <section className="section section--gray">
+        <Container>
+          <h2 className="section-title">HOAVU BRANDING giúp gì cho doanh nghiệp?</h2>
+          <Row className="mt-4">
+            {aiSearchCards.map((card) => (
+              <Col key={card.title} lg={4} md={6} className="mb-4">
+                <div className="intro-card h-100">
+                  <h3>{card.title}</h3>
+                  <p>{card.desc}</p>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </section>
 
       <section className="section">
         <Container>
@@ -132,10 +129,10 @@ function HomePage() {
             {introCards.map((card, index) => (
               <Col key={card.title} lg={3} md={6} className="mb-4">
                 <div className="intro-card h-100 fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                  <div className="intro-card-icon">{card.icon}</div>
+                  <div className="intro-card-icon" aria-hidden="true">{card.icon}</div>
                   <h3>{card.title}</h3>
                   <p>{card.desc}</p>
-                  <Link to="/gioi-thieu" className="detail-link">Chi tiết <FiArrowRight /></Link>
+                  <Link to="/gioi-thieu" className="detail-link" aria-label="Xem thêm giới thiệu về HOAVU BRANDING">Chi tiết <FiArrowRight /></Link>
                 </div>
               </Col>
             ))}
@@ -151,26 +148,26 @@ function HomePage() {
               <h2 className="section-title">Dịch vụ</h2>
             </div>
             <p>
-              Các giải pháp thiết kế được xây dựng theo từng mục tiêu thương hiệu: từ logo, bộ nhận diện đến gian hàng và nền tảng số.
+              Các giải pháp thiết kế được xây dựng theo từng mục tiêu thương hiệu: từ logo, bộ nhận diện đến ấn phẩm truyền thông và nền tảng số.
             </p>
           </div>
           {services.length > 0 ? (
             <Row className="home-services-grid g-4">
               {services.map((service, index) => (
                 <Col key={service._id} lg={4} md={6} className="mb-4">
-                  <Link to={`/dich-vu/${service.slug}`} className="service-card-link d-block h-100">
+                  <Link to={`/dich-vu/${service.slug}`} className="service-card-link d-block h-100" aria-label={buildServiceCtaLabel(service.title)}>
                     <div className="service-card">
                       <div className="service-card-top">
                         <span className="service-card-index">0{index + 1}</span>
-                        <div className="service-card-icon">&#127912;</div>
+                        <div className="service-card-icon" aria-hidden="true">&#127912;</div>
                       </div>
                       <h3>{service.title}</h3>
                       <ul>
                         {service.features?.slice(0, 5).map((feature) => (
-                          <li key={feature}><FiCheckCircle /> <span>{feature}</span></li>
+                          <li key={feature}><FiCheckCircle aria-hidden="true" /> <span>{feature}</span></li>
                         ))}
                       </ul>
-                      <span className="service-card-cta">Xem chi tiết <FiArrowRight /></span>
+                      <span className="service-card-cta">Xem chi tiết <FiArrowRight aria-hidden="true" /></span>
                     </div>
                   </Link>
                 </Col>
@@ -180,8 +177,8 @@ function HomePage() {
             <div className="home-empty-state home-empty-state--primary">
               <h3>Đang cập nhật dịch vụ</h3>
               <p>Các gói thiết kế sẽ được hiển thị sau khi dữ liệu được đồng bộ. Bạn vẫn có thể liên hệ để được tư vấn nhanh.</p>
-              <Link to="/lien-he" className="btn-hoavu btn-hoavu--white">
-                Tư vấn dịch vụ <FiMessageCircle />
+              <Link to="/lien-he" className="btn-hoavu btn-hoavu--white" aria-label="Tư vấn dịch vụ thiết kế thương hiệu">
+                Tư vấn dịch vụ <FiMessageCircle aria-hidden="true" />
               </Link>
             </div>
           )}
@@ -196,14 +193,13 @@ function HomePage() {
           </p>
           <ProjectGrid projects={projects} />
           <div className="text-center mt-4">
-            <Link to="/du-an" className="btn-hoavu btn-hoavu--primary">
-              Xem thêm <FiArrowRight />
+            <Link to="/du-an" className="btn-hoavu btn-hoavu--primary" aria-label="Xem thêm dự án thiết kế logo và nhận diện thương hiệu">
+              Xem thêm <FiArrowRight aria-hidden="true" />
             </Link>
           </div>
         </Container>
       </section>
 
-      {/* <StatsCounter /> */}
       <TestimonialCarousel />
     </>
   );

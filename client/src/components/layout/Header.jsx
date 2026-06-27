@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { BRAND } from '../../config/brand';
 import { useSettings } from '../../context/useSettings';
 import { resolveMediaUrl } from '../../utils/media';
+import { buildLogoAlt } from '../../utils/seoContent';
 
 function Header() {
   const { settings } = useSettings();
@@ -14,11 +15,13 @@ function Header() {
     <header className="site-header">
       <Navbar expand="lg" style={{ background: 'rgba(255,255,255,0.96)', boxShadow: 'var(--shadow-sm)', padding: '12px 0' }}>
         <Container>
-          <Navbar.Brand as={Link} to="/" className="site-header-logo d-flex align-items-center flex-shrink-0">
-            <img
-              src={companyLogo}
-              alt={companyName}
-            />
+          <Navbar.Brand
+            as={Link}
+            to="/"
+            className="site-header-logo d-flex align-items-center flex-shrink-0"
+            aria-label={`Về trang chủ ${companyName}`}
+          >
+            <img src={companyLogo} alt={settings?.logoAlt || buildLogoAlt(companyName)} />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="main-nav" />
           <Navbar.Collapse id="main-nav">
@@ -51,6 +54,7 @@ function Header() {
               target="_blank"
               rel="noreferrer"
               className="btn-hoavu btn-hoavu--primary d-none d-lg-inline-flex"
+              aria-label="Nhắn tin fanpage HOAVU BRANDING để nhận tư vấn thiết kế logo"
               style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
             >
               NHẮN TIN FANPAGE

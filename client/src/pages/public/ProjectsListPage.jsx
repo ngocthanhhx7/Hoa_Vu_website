@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { NavLink, useSearchParams } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
+import { NavLink, useSearchParams } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import Pagination from '../../components/common/Pagination';
 import ProjectGrid from '../../components/common/ProjectGrid';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 import { SITE_URL } from '../../utils/seo';
+import { buildCollectionPageSchema } from '../../utils/schema';
 
 function ProjectsListPage() {
   const [searchParams] = useSearchParams();
@@ -33,36 +34,30 @@ function ProjectsListPage() {
   }, [page]);
 
   const breadcrumbItems = [{ label: 'Dự án' }];
+  const title = 'Dự án thiết kế thương hiệu';
+  const description = 'Xem các dự án thiết kế logo, nhận diện thương hiệu và visual branding đã thực hiện bởi HOAVU BRANDING.';
+  const path = page > 1 ? `/du-an?page=${page}` : '/du-an';
 
-  const projectsListJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    '@id': `${SITE_URL}/du-an#collectionpage`,
-    name: 'Dự án thiết kế thương hiệu',
-    description: 'Xem các dự án thiết kế logo, nhận diện thương hiệu và visual branding đã thực hiện bởi HOAVU BRANDING.',
-    url: `${SITE_URL}/du-an`,
-    isPartOf: {
-      '@id': `${SITE_URL}/#website`,
-    },
-    mainEntity: {
-      '@type': 'ItemList',
-      name: 'Danh sách dự án thiết kế thương hiệu',
-      numberOfItems: projects.length,
-      itemListElement: projects.map((project, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        url: `${SITE_URL}/du-an/${project.category?.slug || 'thiet-ke-logo'}/${project.slug}`,
-        name: project.title,
-      })),
-    },
-  };
+  const projectsListJsonLd = buildCollectionPageSchema({
+    siteUrl: SITE_URL,
+    path: '/du-an',
+    name: title,
+    description,
+    items: projects.map((project) => ({
+      url: `${SITE_URL}/du-an/${project.category?.slug || 'thiet-ke-logo'}/${project.slug}`,
+      name: project.title,
+      description: project.description,
+    })),
+  });
 
   return (
     <>
       <SEO
-        title="Dự án thiết kế thương hiệu"
-        description="Xem các dự án thiết kế logo, nhận diện thương hiệu và visual branding đã thực hiện bởi HOAVU BRANDING."
-        path={page > 1 ? `/du-an?page=${page}` : '/du-an'}
+        title={title}
+        description={description}
+        path={path}
+        prevPath={page > 2 ? `/du-an?page=${page - 1}` : page === 2 ? '/du-an' : undefined}
+        nextPath={page < pagination.pages ? `/du-an?page=${page + 1}` : undefined}
         keywords={['dự án thiết kế logo', 'portfolio branding', 'dự án nhận diện thương hiệu']}
         jsonLd={projectsListJsonLd}
         breadcrumbItems={breadcrumbItems}

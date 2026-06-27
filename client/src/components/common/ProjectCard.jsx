@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { buildProjectPath } from '../../utils/category';
 import { resolveMediaUrl } from '../../utils/media';
+import { buildProjectImageAlt } from '../../utils/seoContent';
 
 function ProjectCard({ project }) {
   const [hasError, setHasError] = useState(false);
@@ -12,13 +13,18 @@ function ProjectCard({ project }) {
   }, [project]);
 
   const showImage = Boolean(imageUrl) && !hasError;
+  const imageAlt = project.thumbnailAlt || buildProjectImageAlt({
+    title: project.title,
+    categoryName: project.category?.name,
+    clientName: project.client?.name,
+  });
 
   return (
-    <Link className="project-card" to={buildProjectPath(project)}>
+    <Link className="project-card" to={buildProjectPath(project)} aria-label={`Xem chi tiết dự án ${project.title}`}>
       {showImage ? (
         <img
           src={imageUrl}
-          alt={project.title}
+          alt={imageAlt}
           loading="lazy"
           decoding="async"
           onError={() => setHasError(true)}

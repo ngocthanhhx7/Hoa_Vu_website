@@ -10,6 +10,12 @@ import {
   normalizeSeoKeywords,
   normalizeSeoTitle,
 } from '../../utils/seo';
+import { buildCanonicalPath } from '../../utils/seoContent';
+import {
+  buildOrganizationSchema,
+  buildWebsiteSchema,
+  pruneSchema,
+} from '../../utils/schema';
 
 function SEO({
   title,
@@ -22,9 +28,13 @@ function SEO({
   noindex = false,
   jsonLd,
   breadcrumbItems,
+  prevPath,
+  nextPath,
+  datePublished,
+  dateModified,
 }) {
   const location = useLocation();
-  const canonicalPath = path || `${location.pathname}${location.search}`;
+  const canonicalPath = buildCanonicalPath(path || `${location.pathname}${location.search}`);
   const canonicalUrl = buildCanonicalUrl(canonicalPath);
   const pageTitle = normalizeSeoTitle(title);
   const pageDescription = normalizeSeoDescription(description);
@@ -33,78 +43,18 @@ function SEO({
   const keywordContent = normalizeSeoKeywords(keywords);
 
   const schemas = [
-    // ── Organization ──
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      '@id': `${SITE_URL}/#organization`,
+    buildOrganizationSchema({
+      siteUrl: SITE_URL,
       name: BRAND.name,
-      alternateName: BRAND.shortName,
-      url: SITE_URL,
-      logo: {
-        '@type': 'ImageObject',
-        url: absoluteUrl(BRAND.logoFull),
-        width: 512,
-        height: 512,
-      },
-      image: absoluteUrl(BRAND.defaultImage),
+      logoUrl: absoluteUrl(BRAND.logoFull),
       description: BRAND.seoDescription,
-      foundingDate: '2020',
-      areaServed: {
-        '@type': 'Country',
-        name: 'Vietnam',
-      },
-      serviceArea: {
-        '@type': 'GeoCircle',
-        geoMidpoint: {
-          '@type': 'GeoCoordinates',
-          latitude: 10.7769,
-          longitude: 106.7009,
-        },
-      },
-      sameAs: [
-        BRAND.contact.facebook,
-      ].filter(Boolean),
-      contactPoint: {
-        '@type': 'ContactPoint',
-        contactType: 'customer service',
-        url: BRAND.contact.messenger,
-        availableLanguage: ['Vietnamese'],
-      },
-      knowsAbout: [
-        'Thiết kế logo',
-        'Nhận diện thương hiệu',
-        'Visual truyền thông',
-        'Branding',
-        'Graphic design',
-      ],
-    },
-
-    // ── WebSite with SearchAction ──
-    {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      '@id': `${SITE_URL}/#website`,
+    }),
+    buildWebsiteSchema({
+      siteUrl: SITE_URL,
       name: BRAND.name,
-      alternateName: BRAND.shortName,
-      url: SITE_URL,
-      inLanguage: 'vi-VN',
       description: BRAND.seoDescription,
-      publisher: {
-        '@id': `${SITE_URL}/#organization`,
-      },
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
-        },
-        'query-input': 'required name=search_term_string',
-      },
-    },
-
-    // ── WebPage for current page ──
-    {
+    }),
+    pruneSchema({
       '@context': 'https://schema.org',
       '@type': 'WebPage',
       '@id': `${canonicalUrl}#webpage`,
@@ -119,14 +69,12 @@ function SEO({
         '@id': `${SITE_URL}/#organization`,
       },
       image: pageImage,
-      dateModified: new Date().toISOString().split('T')[0],
-    },
-
-    // ── Custom schemas from pages ──
+      datePublished,
+      dateModified: dateModified || datePublished || new Date().toISOString().split('T')[0],
+    }),
     ...normalizeJsonLd(jsonLd),
-  ];
+  ].filter(Boolean);
 
-  // ── BreadcrumbList schema ──
   if (breadcrumbItems && breadcrumbItems.length > 0) {
     const breadcrumbListItems = [
       {
@@ -158,6 +106,8 @@ function SEO({
       <meta name="googlebot" content={robots} />
       {keywordContent ? <meta name="keywords" content={keywordContent} /> : null}
       <link rel="canonical" href={canonicalUrl} />
+      {prevPath ? <link rel="prev" href={buildCanonicalUrl(prevPath)} /> : null}
+      {nextPath ? <link rel="next" href={buildCanonicalUrl(nextPath)} /> : null}
 
       <meta property="og:locale" content="vi_VN" />
       <meta property="og:type" content={type} />
@@ -172,6 +122,9 @@ function SEO({
       <meta name="twitter:title" content={pageTitle} />
       <meta name="twitter:description" content={pageDescription} />
       <meta name="twitter:image" content={pageImage} />
+
+      {datePublished ? <meta property="article:published_time" content={datePublished} /> : null}
+      {dateModified ? <meta property="article:modified_time" content={dateModified} /> : null}
 
       {schemas.map((schema, index) => (
         <script key={`seo-schema-${index}`} type="application/ld+json">

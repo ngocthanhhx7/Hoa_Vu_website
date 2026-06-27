@@ -9,7 +9,7 @@ const FloatingCTA = () => {
         href={BRAND.contact.messenger}
         target="_blank"
         rel="noreferrer"
-        aria-label="Messenger"
+        aria-label="Nhắn tin Messenger với HOAVU BRANDING"
       >
         <FiMessageCircle />
       </a>
@@ -18,7 +18,7 @@ const FloatingCTA = () => {
         href={BRAND.contact.facebook}
         target="_blank"
         rel="noreferrer"
-        aria-label="Fanpage Hoa Vu Branding"
+        aria-label="Mở fanpage HOAVU BRANDING để nhận tư vấn thiết kế logo"
       >
         <FiExternalLink />
       </a>

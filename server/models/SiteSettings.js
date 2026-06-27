@@ -11,6 +11,7 @@ const siteSettingsSchema = new mongoose.Schema({
   companyName: { type: String, default: 'C\u00d4NG TY TNHH HOA VU VIET NAM' },
   tagline: { type: String, default: 'N\u00e2ng t\u1ea7m th\u01b0\u01a1ng hi\u1ec7u' },
   logo: { type: String, default: '' },
+  logoAlt: { type: String, default: '' },
   favicon: { type: String, default: '' },
   address: { type: String, default: '248 Ho\u00e0ng Hoa Th\u00e1m, Ph\u01b0\u1eddng 5, Qu\u1eadn B\u00ecnh Th\u1ea1nh, TP. H\u1ed3 Ch\u00ed Minh' },
   email: { type: String, default: 'info@hoavu.vn' },
@@ -43,6 +44,22 @@ const siteSettingsSchema = new mongoose.Schema({
     greeting: { type: String, default: 'Xin ch\u00e0o! T\u00f4i l\u00e0 tr\u1ee3 l\u00fd \u1ea3o c\u1ee7a Hoa Vu. T\u00f4i c\u00f3 th\u1ec3 gi\u00fap b\u1ea1n t\u00ecm hi\u1ec3u v\u1ec1 d\u1ecbch v\u1ee5, b\u00e1o gi\u00e1, ho\u1eb7c \u0111\u1eb7t l\u1ecbch t\u01b0 v\u1ea5n.' },
     quickReplies: [{ type: String }],
     enabled: { type: Boolean, default: true },
+  },
+  seo: {
+    title: { type: String, default: '' },
+    description: { type: String, default: '' },
+    keywords: [{ type: String }],
+    canonicalPath: { type: String, default: '' },
+    ogImage: { type: String, default: '' },
+    imageAlt: { type: String, default: '' },
+    noindex: { type: Boolean, default: false },
+    aiSummary: { type: String, default: '' },
+    primaryKeyword: { type: String, default: '' },
+    secondaryKeywords: [{ type: String }],
+    faqs: [{
+      question: { type: String, default: '' },
+      answer: { type: String, default: '' },
+    }],
   },
 }, { timestamps: true });
 

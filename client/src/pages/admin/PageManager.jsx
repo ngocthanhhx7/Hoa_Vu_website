@@ -20,7 +20,15 @@ function PageManager() {
         { key: 'htmlContent', label: 'Nội dung HTML', type: 'textarea' },
         { key: 'seo.title', label: 'SEO title' },
         { key: 'seo.description', label: 'SEO description', type: 'textarea' },
+        { key: 'seo.primaryKeyword', label: 'Từ khóa chính' },
+        { key: 'seo.secondaryKeywords', label: 'Từ khóa phụ', type: 'list' },
         { key: 'seo.keywords', label: 'SEO keywords', type: 'list' },
+        { key: 'seo.canonicalPath', label: 'Canonical path' },
+        { key: 'seo.ogImage', label: 'OG image URL' },
+        { key: 'seo.imageAlt', label: 'SEO image alt' },
+        { key: 'seo.aiSummary', label: 'AI summary', type: 'textarea', rows: 3 },
+        { key: 'seo.faqs', label: 'FAQ SEO (mỗi dòng: Câu hỏi | Câu trả lời)', type: 'faqList', fullWidth: true },
+        { key: 'seo.noindex', label: 'Không index trang này', type: 'checkbox' },
         { key: 'isActive', label: 'Hiển thị', type: 'checkbox' },
       ]}
     />

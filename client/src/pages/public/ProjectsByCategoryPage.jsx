@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { NavLink, useParams, useSearchParams } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
+import { NavLink, useParams, useSearchParams } from 'react-router-dom';
 import HoaVuBreadcrumb from '../../components/common/Breadcrumb';
 import Pagination from '../../components/common/Pagination';
 import ProjectGrid from '../../components/common/ProjectGrid';
 import SEO from '../../components/common/SEO';
 import { publicAPI } from '../../services/api';
 import { SITE_URL } from '../../utils/seo';
+import { buildCollectionPageSchema } from '../../utils/schema';
 
 function ProjectsByCategoryPage() {
   const { category } = useParams();
@@ -40,35 +41,31 @@ function ProjectsByCategoryPage() {
   }, [currentCategory, page]);
 
   const breadcrumbItems = [{ label: 'Dự án', to: '/du-an' }, { label: currentCategory?.name || category }];
+  const title = currentCategory ? `Dự án ${currentCategory.name}` : 'Dự án thiết kế thương hiệu';
+  const description = `Các dự án ${currentCategory?.name || 'thiết kế thương hiệu'} đã thực hiện bởi HOAVU BRANDING.`;
+  const basePath = `/du-an/${category}`;
+  const path = page > 1 ? `${basePath}?page=${page}` : basePath;
 
-  const projectsCategoryJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    '@id': `${SITE_URL}/du-an/${category}#collectionpage`,
-    name: currentCategory ? `Dự án ${currentCategory.name}` : 'Dự án thiết kế thương hiệu',
-    description: `Các dự án ${currentCategory?.name || 'thiết kế thương hiệu'} đã thực hiện bởi HOAVU BRANDING.`,
-    url: `${SITE_URL}/du-an/${category}`,
-    isPartOf: {
-      '@id': `${SITE_URL}/#website`,
-    },
-    mainEntity: {
-      '@type': 'ItemList',
-      numberOfItems: projects.length,
-      itemListElement: projects.map((project, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        url: `${SITE_URL}/du-an/${project.category?.slug || category}/${project.slug}`,
-        name: project.title,
-      })),
-    },
-  };
+  const projectsCategoryJsonLd = buildCollectionPageSchema({
+    siteUrl: SITE_URL,
+    path: basePath,
+    name: title,
+    description,
+    items: projects.map((project) => ({
+      url: `${SITE_URL}/du-an/${project.category?.slug || category}/${project.slug}`,
+      name: project.title,
+      description: project.description,
+    })),
+  });
 
   return (
     <>
       <SEO
-        title={currentCategory ? `Dự án ${currentCategory.name}` : 'Dự án thiết kế thương hiệu'}
-        description={`Các dự án ${currentCategory?.name || 'thiết kế thương hiệu'} đã thực hiện bởi HOAVU BRANDING.`}
-        path={page > 1 ? `/du-an/${category}?page=${page}` : `/du-an/${category}`}
+        title={title}
+        description={description}
+        path={path}
+        prevPath={page > 2 ? `${basePath}?page=${page - 1}` : page === 2 ? basePath : undefined}
+        nextPath={page < pagination.pages ? `${basePath}?page=${page + 1}` : undefined}
         jsonLd={projectsCategoryJsonLd}
         breadcrumbItems={breadcrumbItems}
       />
