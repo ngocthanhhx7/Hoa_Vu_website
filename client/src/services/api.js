@@ -79,9 +79,12 @@ export const adminAPI = {
   getSettings: () => api.get('/admin/settings'),
   updateSettings: (data) => api.put('/admin/settings', data),
   getMedia: (params) => api.get('/admin/media', { params }),
-  uploadMedia: (formData, folder) => api.post(`/admin/media?folder=${folder || 'general'}`, formData, {
-    timeout: 60000,
-  }),
+  uploadMedia: (formData, folder) => {
+    const encodedFolder = encodeURIComponent(folder || 'general');
+    return api.post(`/admin/media?folder=${encodedFolder}`, formData, {
+      timeout: 60000,
+    });
+  },
   deleteMedia: (id) => api.delete(`/admin/media/${id}`),
   // Banners (stored in settings.bannerImages)
   getBanners: () => api.get('/admin/banners'),

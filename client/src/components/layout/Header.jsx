@@ -1,11 +1,12 @@
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link, NavLink } from 'react-router-dom';
 import { BRAND } from '../../config/brand';
-import { useSettings } from '../../context/SettingsContext';
+import { useSettings } from '../../context/useSettings';
+import { resolveMediaUrl } from '../../utils/media';
 
 function Header() {
   const { settings } = useSettings();
-  const companyLogo = settings?.logo || BRAND.logoMark;
+  const companyLogo = resolveMediaUrl(settings?.logo || BRAND.logoMark);
   const companyName = settings?.companyName || BRAND.name;
   const facebookUrl = settings?.socialLinks?.facebook || BRAND.contact.facebook;
 

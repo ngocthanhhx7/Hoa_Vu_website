@@ -1,7 +1,6 @@
 import { useCallback, useState, useEffect, useLayoutEffect } from 'react';
 import { publicAPI } from '../services/api';
 import { SettingsContext } from './settingsContextCore';
-export { useSettings } from './useSettings';
 
 export function SettingsProvider({ children }) {
   const [settings, setSettings] = useState(() => {

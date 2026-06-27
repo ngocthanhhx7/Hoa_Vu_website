@@ -6,14 +6,15 @@ import SEO from '../../components/common/SEO';
 import { BRAND } from '../../config/brand';
 import { publicAPI } from '../../services/api';
 import { SITE_URL } from '../../utils/seo';
-import { useSettings } from '../../context/SettingsContext';
+import { useSettings } from '../../context/useSettings';
+import { resolveMediaUrl } from '../../utils/media';
 
 function ContactPage() {
   const { settings } = useSettings();
   const facebookUrl = settings?.socialLinks?.facebook || BRAND.contact.facebook;
   const messengerUrl = facebookUrl ? facebookUrl.replace(/facebook\.com/i, 'm.me').replace(/www\./i, '') : BRAND.contact.messenger;
   const address = settings?.address || BRAND.contact.address;
-  const logo = settings?.logo || BRAND.logoFull;
+  const logo = resolveMediaUrl(settings?.logo || BRAND.logoFull);
   const companyName = settings?.companyName || BRAND.name;
 
   const [form, setForm] = useState({ name: '', phone: '', email: '', company: '', service: '', message: '' });

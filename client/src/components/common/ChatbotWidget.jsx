@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { FiMessageSquare, FiX, FiSend } from 'react-icons/fi';
-import { useSettings } from '../../context/SettingsContext';
+import { useSettings } from '../../context/useSettings';
 import { publicAPI } from '../../services/api';
 import { BRAND } from '../../config/brand';
 

@@ -2,12 +2,13 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FiExternalLink, FiMapPin, FiMessageCircle, FiYoutube, FiInstagram } from 'react-icons/fi';
 import { BRAND } from '../../config/brand';
-import { useSettings } from '../../context/SettingsContext';
+import { useSettings } from '../../context/useSettings';
+import { resolveMediaUrl } from '../../utils/media';
 
 function Footer() {
   const { settings } = useSettings();
   
-  const companyLogo = settings?.logo || "/brand/Logofoot.svg";
+  const companyLogo = resolveMediaUrl(settings?.logo || "/brand/Logofoot.svg");
   const companyName = settings?.companyName || BRAND.name;
   const description = settings?.tagline || BRAND.description;
   const address = settings?.address || BRAND.contact.address;

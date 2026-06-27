@@ -9,12 +9,13 @@ import TestimonialCarousel from '../../components/common/TestimonialCarousel';
 import { BRAND } from '../../config/brand';
 import { publicAPI } from '../../services/api';
 import { SITE_URL, absoluteUrl } from '../../utils/seo';
-import { useSettings } from '../../context/SettingsContext';
+import { useSettings } from '../../context/useSettings';
+import { resolveMediaUrl } from '../../utils/media';
 
 function HomePage() {
   const { settings } = useSettings();
   const companyName = settings?.companyName || BRAND.name;
-  const companyLogo = settings?.logo || BRAND.logoFull;
+  const companyLogo = resolveMediaUrl(settings?.logo || BRAND.logoFull);
   const tagline = settings?.tagline || BRAND.description;
   const facebookUrl = settings?.socialLinks?.facebook || BRAND.contact.facebook;
 

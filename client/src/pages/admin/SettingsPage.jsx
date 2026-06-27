@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { Alert, Button, Col, Form, Row, Tabs, Tab, Card, Spinner } from 'react-bootstrap';
 import { FiUpload, FiTrash2, FiGlobe, FiPhone, FiShare2, FiSliders, FiMessageSquare, FiInfo } from 'react-icons/fi';
 import { adminAPI } from '../../services/api';
-import { useSettings } from '../../context/SettingsContext';
+import { useSettings } from '../../context/useSettings';
 import { createUploadFormData, getUploadErrorMessage } from '../../utils/uploadFile';
+import { resolveMediaUrl } from '../../utils/media';
 
 const ensureHexHash = (val, fallback = '#000000') => {
   if (!val) return fallback;
@@ -200,7 +201,7 @@ function SettingsPage() {
                             <div className="py-4"><Spinner animation="border" size="sm" variant="danger" /></div>
                           ) : form.logo ? (
                             <div>
-                              <img src={form.logo} alt="Logo Preview" style={logoPreviewStyle} />
+                              <img src={resolveMediaUrl(form.logo)} alt="Logo Preview" style={logoPreviewStyle} />
                               <div className="d-flex justify-content-center gap-2">
                                 <Button variant="outline-danger" size="sm" onClick={() => setNested('logo', '')}>
                                   <FiTrash2 className="me-1" /> Xóa Logo
@@ -229,7 +230,7 @@ function SettingsPage() {
                             <div className="py-4"><Spinner animation="border" size="sm" variant="danger" /></div>
                           ) : form.favicon ? (
                             <div>
-                              <img src={form.favicon} alt="Favicon Preview" style={faviconPreviewStyle} />
+                              <img src={resolveMediaUrl(form.favicon)} alt="Favicon Preview" style={faviconPreviewStyle} />
                               <div className="d-flex justify-content-center gap-2">
                                 <Button variant="outline-danger" size="sm" onClick={() => setNested('favicon', '')}>
                                   <FiTrash2 className="me-1" /> Xóa Favicon
@@ -476,7 +477,7 @@ function SettingsPage() {
                   <div style={{ background: '#e4e4e7', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid #d4d4d8' }}>
                     <div className="bg-white rounded px-3 py-1 text-muted d-flex align-items-center gap-2" style={{ fontSize: 9, width: '100%', maxWidth: 260, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                       {form.favicon ? (
-                        <img src={form.favicon} alt="Favicon" style={{ height: 10, width: 10, objectFit: 'contain' }} />
+                        <img src={resolveMediaUrl(form.favicon)} alt="Favicon" style={{ height: 10, width: 10, objectFit: 'contain' }} />
                       ) : (
                         <span style={{ width: 8, height: 8, background: '#999', borderRadius: '50%' }} />
                       )}
@@ -497,7 +498,7 @@ function SettingsPage() {
                       fontFamily: form.theme.fontFamily || 'Montserrat, sans-serif'
                     }}>
                       {form.logo ? (
-                        <img src={form.logo} alt="Logo" style={{ width: 52, height: 22, objectFit: 'contain', objectPosition: 'left center' }} />
+                        <img src={resolveMediaUrl(form.logo)} alt="Logo" style={{ width: 52, height: 22, objectFit: 'contain', objectPosition: 'left center' }} />
                       ) : (
                         <span style={{ fontWeight: 800, color: ensureHexHash(form.theme.primaryColor, '#D2232A'), fontSize: 11 }}>
                           {form.companyName || 'HOAVU'}
@@ -555,7 +556,7 @@ function SettingsPage() {
                     }}>
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         {form.logo ? (
-                          <img src={form.logo} alt="Logo" style={{ width: 48, height: 18, objectFit: 'contain', objectPosition: 'left center', filter: 'brightness(0) invert(1)' }} />
+                          <img src={resolveMediaUrl(form.logo)} alt="Logo" style={{ width: 48, height: 18, objectFit: 'contain', objectPosition: 'left center', filter: 'brightness(0) invert(1)' }} />
                         ) : (
                           <span style={{ fontWeight: 800, color: '#fff' }}>{form.companyName || 'HOAVU'}</span>
                         )}

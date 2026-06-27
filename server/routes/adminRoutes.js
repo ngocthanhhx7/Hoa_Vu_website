@@ -15,8 +15,8 @@ const chatbotCtrl = require('../controllers/chatbotController');
 // Auth (no middleware)
 router.post('/login', authCtrl.login);
 
-// All admin routes require auth
-router.use(protect);
+// All admin routes require auth and admin privileges
+router.use(protect, adminOnly);
 
 // Dashboard
 router.get('/me', authCtrl.getMe);

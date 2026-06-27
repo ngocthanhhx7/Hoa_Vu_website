@@ -40,7 +40,7 @@ module.exports = {
   geminiTimeoutMs: parseInteger(process.env.GEMINI_TIMEOUT_MS, 15000),
   uploadDir: process.env.UPLOAD_DIR || 'uploads',
   uploadProvider,
-  maxFileSize: parseInteger(process.env.MAX_FILE_SIZE, 5 * 1024 * 1024),
+  maxFileSize: parseInteger(process.env.MAX_FILE_SIZE, 100 * 1024 * 1024),
   corsOrigins: rawCorsOrigin.split(',').map((origin) => origin.trim()).filter(Boolean),
   nodeEnv: process.env.NODE_ENV || 'development',
   trustProxy: parseTrustProxy(process.env.TRUST_PROXY),

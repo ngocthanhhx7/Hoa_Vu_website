@@ -3,6 +3,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import './styles/index.css';
+import GoogleAnalyticsTracker from './components/common/GoogleAnalyticsTracker';
 import MainLayout from './components/layout/MainLayout';
 import AboutPage from './pages/public/AboutPage';
 import BlogByCategoryPage from './pages/public/BlogByCategoryPage';
@@ -42,6 +43,7 @@ function App() {
     <HelmetProvider>
       <SettingsProvider>
         <Router>
+          <GoogleAnalyticsTracker />
           <Routes>
             <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
