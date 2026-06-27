@@ -90,8 +90,8 @@
   --gray-900: #212529;
 
   /* Typography */
-  --font-primary: 'SVN-Avo', 'UTM Avo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-heading: 'SVN-Avo', 'UTM Avo', sans-serif;
+  --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
 
   /* Spacing */
   --section-padding: 80px 0;
@@ -701,7 +701,7 @@ h6 {
   font-size: 1.12rem;
   font-weight: 800;
   text-transform: uppercase;
-  color: #1b7cc4;
+  color: var(--primary);
   margin-bottom: 18px;
   letter-spacing: 0.02em;
 }

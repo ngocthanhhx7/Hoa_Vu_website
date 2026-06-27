@@ -5,8 +5,8 @@
   --color-surface: #f6f8ff;
   --color-surface-muted: #eef3ff;
   --color-border: rgba(16, 63, 173, 0.12);
-  --color-text: #142446;
-  --color-text-soft: #5d6f96;
+  --color-text: #1e293b;
+  --color-text-soft: #475569;
   --color-success: #24774f;
   --shadow-soft: 0 18px 50px rgba(14, 46, 128, 0.08);
   --shadow-strong: 0 28px 60px rgba(8, 38, 108, 0.16);
@@ -15,5 +15,5 @@
   --radius-lg: 34px;
   --radius-pill: 999px;
   --container-width: min(1180px, calc(100vw - 32px));
-  --font-display: 'SVN-Avo', 'UTM Avo', sans-serif;
+  --font-display: 'Plus Jakarta Sans', sans-serif;
 }
