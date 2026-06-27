@@ -76,7 +76,7 @@ function sanitizeBannerImages(bannerImages = []) {
 exports.getPageBySlug = async (req, res, next) => {
   try {
     const page = await Page.findOne({ slug: req.params.slug, isActive: true }).lean();
-    if (!page) return res.status(404).json({ success: false, message: 'Khong tim thay trang' });
+    if (!page) return res.status(404).json({ success: false, message: 'Không tìm thấy trang' });
     res.json({ success: true, data: page });
   } catch (err) { next(err); }
 };
@@ -98,7 +98,7 @@ exports.createPage = async (req, res, next) => {
 exports.updatePage = async (req, res, next) => {
   try {
     const page = await Page.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!page) return res.status(404).json({ success: false, message: 'Khong tim thay' });
+    if (!page) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
     res.json({ success: true, data: page });
   } catch (err) { next(err); }
 };
@@ -106,7 +106,7 @@ exports.updatePage = async (req, res, next) => {
 exports.deletePage = async (req, res, next) => {
   try {
     await Page.findByIdAndDelete(req.params.id);
-    res.json({ success: true, message: 'Da xoa' });
+    res.json({ success: true, message: 'Đã xóa' });
   } catch (err) { next(err); }
 };
 
@@ -260,7 +260,7 @@ exports.getMedia = async (req, res, next) => {
 exports.uploadMedia = async (req, res, next) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ success: false, message: 'Khong co file' });
+      return res.status(400).json({ success: false, message: 'Không có file' });
     }
 
     const folder = sanitizeFolder(req.query.folder || 'general');
@@ -287,11 +287,11 @@ exports.uploadMedia = async (req, res, next) => {
 exports.deleteMedia = async (req, res, next) => {
   try {
     const media = await Media.findById(req.params.id);
-    if (!media) return res.status(404).json({ success: false, message: 'Khong tim thay' });
+    if (!media) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
 
     await deleteFile(media);
     await Media.findByIdAndDelete(req.params.id);
 
-    res.json({ success: true, message: 'Da xoa' });
+    res.json({ success: true, message: 'Đã xóa' });
   } catch (err) { next(err); }
 };

@@ -12,7 +12,7 @@ const fileFilter = (req, file, cb) => {
     return;
   }
 
-  cb(new Error('Chi chap nhan file anh (JPEG, PNG, GIF, WEBP, SVG), PDF hoac MP4'), false);
+  cb(new Error('Chỉ chấp nhận file ảnh (JPEG, PNG, GIF, WEBP, SVG), PDF hoặc MP4'), false);
 };
 
 const upload = multer({
